@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "892383159870",
+    "project_id": "covid-booking-app",
+    "storage_bucket": "covid-booking-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892383159870:android:065394a2252d234182936f",
+        "android_client_info": {
+          "package_name": "com.csia.covidbookingapp_repo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "892383159870-3osb03qci1gl9eulf9luosins8r5gvtn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDU5j70DjoQsnkqAcTujM-qV1ETaGOSCp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "892383159870-3osb03qci1gl9eulf9luosins8r5gvtn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
