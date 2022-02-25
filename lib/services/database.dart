@@ -6,15 +6,16 @@ class DatabaseService{
   DatabaseService({ required this.uid });
 
   // collection reference
-  final CollectionReference users = FirebaseFirestore.instance.collection('userInformation');
+  final CollectionReference users = FirebaseFirestore.instance.collection('Users');
 
-  Future updateUserInfo(String name, String phoneNumber, String email, String aptDate, String aptTime) async {
+  Future updateUserInfo(String name, String phoneNumber, String email) async {
     return await users.doc(uid).set({
       'name': name,
       'phoneNumber': phoneNumber,
       'email': email,
-      'aptDate': aptDate,
-      'aptTime': aptTime,
+      'aptDate': "",
+      'aptTime': "",
+      'day': "",
     });
   }
 }

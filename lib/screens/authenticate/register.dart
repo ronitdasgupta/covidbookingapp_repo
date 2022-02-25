@@ -120,7 +120,7 @@ class _RegisterState extends State<Register> {
                     if(_formKey.currentState!.validate()){
                       setState(() => loading = true);
                       // Validating through Firebase
-                      dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                      dynamic result = await _auth.registerWithEmailAndPassword(email, password, name, phoneNumber);
                       if(result == null) {
                         setState(() {
                           error = 'please change the credentials';
