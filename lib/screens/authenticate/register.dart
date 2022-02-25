@@ -1,21 +1,19 @@
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:flutter/material.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({Key? key}) : super(key: key);
+class Register extends StatefulWidget {
+  const Register({Key? key}) : super(key: key);
 
   @override
-  _SignInState createState() => _SignInState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _SignInState extends State<SignIn> {
+class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
 
-  // text field state
   String email = '';
   String password = '';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +21,7 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0.0,
-        title: Text('Login Page'),
+        title: Text('Sign Up Page'),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
@@ -32,27 +30,27 @@ class _SignInState extends State<SignIn> {
             children: <Widget> [
               SizedBox(height: 20.0),
               TextFormField(
-                onChanged: (val) {
-                  setState(() => email = val);
-                }
+                  onChanged: (val) {
+                    setState(() => email = val);
+                  }
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                obscureText: true,
-                onChanged: (val) {
-                  setState(() => password = val);
-                }
+                  obscureText: true,
+                  onChanged: (val) {
+                    setState(() => password = val);
+                  }
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
-                child: Text(
-                  'Sign in',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
-                  print(email);
-                  print(password);
-                }
+                  child: Text(
+                    'Sign up',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    print(email);
+                    print(password);
+                  }
               )
             ],
           ),
