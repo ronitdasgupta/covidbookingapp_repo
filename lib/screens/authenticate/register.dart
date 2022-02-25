@@ -24,6 +24,8 @@ class _RegisterState extends State<Register> {
   String email = '';
   String password = '';
   String error = '';
+  String name = '';
+  String phoneNumber = '';
   @override
   Widget build(BuildContext context) {
     return loading ? LoadingScreen() : Scaffold(
@@ -31,7 +33,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0.0,
-        title: Text('Sign Up Page'),
+        title: Text('Register User'),
         actions: <Widget>[
           TextButton.icon(
               icon: Icon(Icons.person),
@@ -43,12 +45,43 @@ class _RegisterState extends State<Register> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 50.0),
         child: Form(
           key: _formKey,
           child: Column(
+            //mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget> [
-              SizedBox(height: 20.0),
+              sizedBoxHeight,
+              TextFormField(
+                  decoration: textInputDecoration.copyWith(hintText: 'Name'),
+                  validator: (String? value){
+                    if(value != null && value.isEmpty){
+                      return 'Enter a name';
+                    }
+                    return null;
+                  },
+                  //validator: (val) => val.isEmpty ? 'Enter an email' : null,
+                  onChanged: (val) {
+                    setState(() => name = val);
+                  }
+              ),
+              sizedBoxHeight,
+              /*
+              TextFormField(
+                  decoration: textInputDecoration.copyWith(hintText: 'Phone Number'),
+                  validator: (String? value){
+                    if(value != null && value.length != 10){
+                      return 'Enter a valid phone number';
+                    }
+                    return null;
+                  },
+                  //validator: (val) => val.isEmpty ? 'Enter an email' : null,
+                  onChanged: (val) {
+                    setState(() => phoneNumber = val);
+                  }
+              ),
+               */
+              //sizedBoxHeight,
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Email'),
                 validator: (String? value){
@@ -62,7 +95,7 @@ class _RegisterState extends State<Register> {
                     setState(() => email = val);
                   }
               ),
-              SizedBox(height: 20.0),
+              sizedBoxHeight,
               TextFormField(
                   decoration: textInputDecoration.copyWith(hintText: 'Password'),
                   obscureText: true,
@@ -77,10 +110,10 @@ class _RegisterState extends State<Register> {
                     setState(() => password = val);
                   }
               ),
-              SizedBox(height: 20.0),
+              SizedBox(height: 3.0),
               ElevatedButton(
                   child: Text(
-                    'Sign up',
+                    'Register',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
@@ -97,7 +130,7 @@ class _RegisterState extends State<Register> {
                     }
                   }
               ),
-              SizedBox(height: 12.0),
+              //sizedBoxHeight,
               Text(
                 error,
                 style: TextStyle(color: Colors. red, fontSize: 14.0),

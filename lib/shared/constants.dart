@@ -10,3 +10,5 @@ const textInputDecoration = InputDecoration(
   borderSide: BorderSide(color: Colors.black, width: 2.0)
   ),
   );
+
+const sizedBoxHeight = SizedBox(height: 20.0);
