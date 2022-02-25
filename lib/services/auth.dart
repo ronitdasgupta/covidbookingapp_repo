@@ -1,4 +1,5 @@
 import 'package:covidbookingapp_repo/models/user.dart';
+import 'package:covidbookingapp_repo/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -67,6 +68,10 @@ class AuthService{
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
+
+      // create a new document for the user with the uid
+      await DatabaseService(uid: user!.uid).updateUserInfo('new user', '4256770932', 'abc@abc.com', 'february 7', '4:30');
+
       return _userFromFirebaseUser(user);
     } catch(e){
       print(e.toString());
