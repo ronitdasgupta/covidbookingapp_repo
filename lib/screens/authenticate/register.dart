@@ -1,4 +1,5 @@
 import 'package:covidbookingapp_repo/services/auth.dart';
+import 'package:covidbookingapp_repo/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -46,6 +47,7 @@ class _RegisterState extends State<Register> {
             children: <Widget> [
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(hintText: 'Email'),
                 validator: (String? value){
                   if(value != null && value.isEmpty){
                     return 'Enter an email';
@@ -59,6 +61,7 @@ class _RegisterState extends State<Register> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                  decoration: textInputDecoration.copyWith(hintText: 'Password'),
                   obscureText: true,
                   validator: (String? value){
                     if(value != null && value.length < 6){
