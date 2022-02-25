@@ -19,6 +19,7 @@ class _RegisterState extends State<Register> {
 
   String email = '';
   String password = '';
+  String error = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,11 +79,19 @@ class _RegisterState extends State<Register> {
                   ),
                   onPressed: () async {
                     if(_formKey.currentState!.validate()){
-                      print(email);
-                      print(password);
+                      // Validating through Firebase
+                      dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                      if(result == null){
+                        setState(() => error = 'enter a valid email');
+                      }
                     }
                   }
-              )
+              ),
+              SizedBox(height: 12.0),
+              Text(
+                error,
+                style: TextStyle(color: Colors. red, fontSize: 14.0),
+              ),
             ],
           ),
         ),
