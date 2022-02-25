@@ -1,4 +1,5 @@
 import 'package:covidbookingapp_repo/services/auth.dart';
+import 'package:covidbookingapp_repo/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/constants.dart';
@@ -18,6 +19,7 @@ class _SignInState extends State<SignIn> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   // text field state
   String email = '';
@@ -26,7 +28,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? LoadingScreen() : Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -83,10 +85,14 @@ class _SignInState extends State<SignIn> {
                 ),
                 onPressed: () async {
                   if(_formKey.currentState!.validate()){
+                    setState(() => loading = true);
                     dynamic result = await _auth.signInWithEmailAndPassword(email, password);
                     // Validating through Firebase
                     if(result == null) {
-                      setState(() => error = 'please change the credentials');
+                      setState(() {
+                        error = 'please change the credentials';
+                        loading = false;
+                      });
                     }
                   }
                 }

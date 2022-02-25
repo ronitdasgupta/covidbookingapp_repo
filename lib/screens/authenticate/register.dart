@@ -2,6 +2,8 @@ import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:covidbookingapp_repo/shared/constants.dart';
 import 'package:flutter/material.dart';
 
+import '../../shared/loading.dart';
+
 class Register extends StatefulWidget {
 
   final Function toggleView;
@@ -17,13 +19,14 @@ class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool loading = false;
 
   String email = '';
   String password = '';
   String error = '';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return loading ? LoadingScreen() : Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -82,10 +85,14 @@ class _RegisterState extends State<Register> {
                   ),
                   onPressed: () async {
                     if(_formKey.currentState!.validate()){
+                      setState(() => loading = true);
                       // Validating through Firebase
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                      if(result == null){
-                        setState(() => error = 'enter a valid email');
+                      if(result == null) {
+                        setState(() {
+                          error = 'please change the credentials';
+                          loading = false;
+                        });
                       }
                     }
                   }
