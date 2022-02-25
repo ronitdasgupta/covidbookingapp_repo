@@ -2,7 +2,11 @@ import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+
+  final Function toggleView;
+  Register({ required this.toggleView });
+
+  //const Register({Key? key}) : super(key: key);
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -22,6 +26,15 @@ class _RegisterState extends State<Register> {
         backgroundColor: Colors.black,
         elevation: 0.0,
         title: Text('Sign Up Page'),
+        actions: <Widget>[
+          TextButton.icon(
+              icon: Icon(Icons.person),
+              label: Text('Sign In'),
+              onPressed: () {
+                widget.toggleView();
+              }
+          )
+        ],
       ),
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
