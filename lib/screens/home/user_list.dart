@@ -1,3 +1,4 @@
+import 'package:covidbookingapp_repo/screens/home/user_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
 
+    // Might use this list for manager to view amount of users/customers
     final users = Provider.of<List<Users>?>(context);
     users?.forEach((user){
       print(user.aptDate);
@@ -26,9 +28,16 @@ class _UserListState extends State<UserList> {
     }
     );
     //print(users);
-
-    return Container(
-
-    );
+    if (users != null && users.isNotEmpty)
+      {
+        return ListView.builder(
+          itemCount: users.length,
+          itemBuilder: (context, index){
+            return UserWidget(user: users[index]);
+          },
+        );
+      } else{
+          return Container();
+    }
   }
 }

@@ -1,5 +1,10 @@
+import 'package:covidbookingapp_repo/screens/home/user_list.dart';
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/users.dart';
+import '../../services/database.dart';
 
 class Manager extends StatelessWidget {
 
@@ -7,21 +12,26 @@ class Manager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('Manager Page'),
+    return StreamProvider<List<Users>?>.value(
+      value: DatabaseService(uid: '').userInfo,
+      initialData: null,
+      child: Scaffold(
         backgroundColor: Colors.black,
-        actions: <Widget>[
-          TextButton.icon(
-            icon: Icon(Icons.person),
-            label: Text('logout'),
-            onPressed: () async {
-              await _auth.signOut();
-            },
-          )
-        ]
-      )
+        appBar: AppBar(
+            title: Text('Manager Page'),
+            backgroundColor: Colors.black,
+            actions: <Widget>[
+              TextButton.icon(
+                icon: Icon(Icons.person),
+                label: Text('logout'),
+                onPressed: () async {
+                  await _auth.signOut();
+                },
+              )
+            ]
+        ),
+        body: UserList(),
+      ),
     );
   }
 }
