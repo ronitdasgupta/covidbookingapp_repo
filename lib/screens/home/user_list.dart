@@ -27,6 +27,14 @@ class _UserListState extends State<UserList> {
       print(user.phoneNumber);
     }
     );
+
+
+    /*
+    for(var doc in users?.docs) {
+      print(doc.data());
+    }
+     */
+
     //print(users);
     if (users != null && users.isNotEmpty)
       {

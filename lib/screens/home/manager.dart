@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/users.dart';
-import '../../services/database.dart';
+import '../../services/usersCollection.dart';
 
 class Manager extends StatelessWidget {
 
@@ -13,7 +13,7 @@ class Manager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Users>?>.value(
-      value: DatabaseService(uid: '').userInfo,
+      value: UsersCollection(uid: '').userInfo,
       initialData: null,
       child: Scaffold(
         backgroundColor: Colors.black,
