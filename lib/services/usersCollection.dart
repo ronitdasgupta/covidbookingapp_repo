@@ -16,6 +16,7 @@ class UsersCollection{
   final CollectionReference businessHours = FirebaseFirestore.instance.collection('BusinessHours');
   final CollectionReference appointments = FirebaseFirestore.instance.collection('Appointments');
 
+  // writes to users collection
   Future updateUserInfo(String name, String phoneNumber, String email) async {
     return await users.doc(uid).set({
       'name': name,

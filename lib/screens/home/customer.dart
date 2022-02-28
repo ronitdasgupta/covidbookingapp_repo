@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:covidbookingapp_repo/models/appointments.dart';
+import 'package:covidbookingapp_repo/models/appointmentInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../models/users.dart';
