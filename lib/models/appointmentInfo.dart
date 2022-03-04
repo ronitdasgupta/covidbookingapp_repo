@@ -8,10 +8,10 @@ class AppointmentSlot {
 }
 
 class AppointmentsInfo {
-  final List<AppointmentSlot> appointmentSlots;
+  final List<AppointmentSlot> appointmentslots;
   final String day;
 
-  AppointmentsInfo({ required this.appointmentSlots, required this.day });
+  AppointmentsInfo({ required this.appointmentslots, required this.day });
 }
 
 

@@ -8,6 +8,8 @@ import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covidbookingapp_repo/screens/home/user_list.dart';
+import 'package:covidbookingapp_repo/services/appointmentsCollection.dart';
+import 'package:covidbookingapp_repo/screens/home/appointments_list.dart';
 
 class Customer extends StatefulWidget {
   @override
@@ -71,11 +73,11 @@ class _CustomerState extends State<Customer> {
 
     }
 
-
-    return StreamProvider<List<Users>?>.value(
-      value: UsersCollection(uid: '').userInfo,
-      initialData: null,
-      child: Scaffold(
+      //return StreamProvider<List<AppointmentsInfo>?>.value(
+        //value: AppointmentsCollection(dateString: '').apt,
+        //initialData: null,
+        //initialData: null,
+        return Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
               title: Text('Select Appointment'),
@@ -90,6 +92,7 @@ class _CustomerState extends State<Customer> {
                 )
               ]
           ),
+          //body: AppointmentsList(),
         body: Center(
           child: Container(
             child: Column(
@@ -139,7 +142,10 @@ class _CustomerState extends State<Customer> {
           ),
         ),
 
-        /*
+
+
+
+          /*
         body: Container(
           //padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
           child: ElevatedButton(
@@ -153,8 +159,8 @@ class _CustomerState extends State<Customer> {
           ),
         ),
          */
-        //body: UserList(),
-        /*
+          //body: UserList(),
+          /*
         body: TableCalendar(
           focusedDay: selectedDay,
           firstDay: DateTime.now(),
@@ -197,7 +203,11 @@ class _CustomerState extends State<Customer> {
         ),
           backgroundColor: Colors.black,
         ), */
-      ),
-    );
+        );
+
+
+
+    return Container();
+
   }
 }

@@ -21,6 +21,25 @@ class AppointmentsCollection {
   }
    */
 
+  /*
+  final CollectionReference appointments = FirebaseFirestore.instance.collection('Appointments');
+
+  // appointments list from snapshot
+  List<AppointmentsInfo> _appointmentsListFromSnapshot(QuerySnapshot snapshot){
+    return snapshot.docs.map((doc){
+      return AppointmentsInfo(
+        appointmentslots: doc.get('appointmentslots') ?? '',
+        day: doc.get('day') ?? '',
+      );
+      // initially returns an iterable
+    }).toList();
+  }
+
+  // get appointments stream
+  Stream<List<AppointmentsInfo>> get apt {
+    return appointments.snapshots().map(_appointmentsListFromSnapshot);
+  }
+   */
 
   /*
   var collection = FirebaseFirestore.instance.collection('users');

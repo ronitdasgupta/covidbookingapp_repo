@@ -1,4 +1,6 @@
+import 'package:covidbookingapp_repo/screens/home/manager_page.dart';
 import 'package:covidbookingapp_repo/screens/home/user_list.dart';
+import 'package:covidbookingapp_repo/screens/home/user_widget.dart';
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +11,8 @@ import '../../services/usersCollection.dart';
 class Manager extends StatelessWidget {
 
   final AuthService _auth = AuthService();
+
+  //final slots = ['15 minutes', '30 minutes', ]
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +31,19 @@ class Manager extends StatelessWidget {
                 onPressed: () async {
                   await _auth.signOut();
                 },
-              )
+              ),
+              TextButton.icon(
+                icon: Icon(Icons.person),
+                label: Text('statistics'),
+                onPressed: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => UserList()),
+                  );
+                },
+              ),
             ]
         ),
-        body: UserList(),
+        body: ManagerPage(),
       ),
     );
   }
