@@ -33,17 +33,17 @@ class BusinessHoursCollection{
   }
    */
 
-  Future updateBusinessHoursInfoSunday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoSunday(String start, String end, bool isholiday, int slotintervals, List<String> slots) async {
     return await businessHours.doc(day1).set({
-      'startTime': startTime,
-      'endTime': endTime,
-      'isHoliday': isHoliday,
-      'slotLength': slotLength,
+      'start': start,
+      'end': end,
+      'isholiday': isholiday,
+      'slotintervals': slotintervals,
       'slots': slots,
     });
   }
 
-  Future updateBusinessHoursInfoMonday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoMonday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day2).set({
       'startTime': startTime,
       'endTime': endTime,
@@ -53,7 +53,7 @@ class BusinessHoursCollection{
     });
   }
 
-  Future updateBusinessHoursInfoTuesday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoTuesday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day3).set({
       'startTime': startTime,
       'endTime': endTime,
@@ -63,7 +63,7 @@ class BusinessHoursCollection{
     });
   }
 
-  Future updateBusinessHoursInfoWednesday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoWednesday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day4).set({
       'startTime': startTime,
       'endTime': endTime,
@@ -73,7 +73,7 @@ class BusinessHoursCollection{
     });
   }
 
-  Future updateBusinessHoursInfoThursday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoThursday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day5).set({
       'startTime': startTime,
       'endTime': endTime,
@@ -83,7 +83,7 @@ class BusinessHoursCollection{
     });
   }
 
-  Future updateBusinessHoursInfoFriday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoFriday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day6).set({
       'startTime': startTime,
       'endTime': endTime,
@@ -93,7 +93,7 @@ class BusinessHoursCollection{
     });
   }
 
-  Future updateBusinessHoursInfoSaturday(String startTime, String endTime, bool isHoliday, double slotLength, List<String> slots) async {
+  Future updateBusinessHoursInfoSaturday(String startTime, String endTime, bool isHoliday, Duration slotLength, List<String> slots) async {
     return await businessHours.doc(day7).set({
       'startTime': startTime,
       'endTime': endTime,

@@ -73,7 +73,7 @@ class AuthService{
       // create a new document for the user with the uid
       await UsersCollection(uid: user!.uid).updateUserInfo(name, phoneNumber, email);
       
-      await BusinessHoursCollection().updateBusinessHoursInfoThursday("09:00", "18:00", false, 0.5, ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",]);
+      //await BusinessHoursCollection().updateBusinessHoursInfoThursday("09:00", "18:00", false, 0.5, ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",]);
 
       return _userFromFirebaseUser(user);
     } catch(e){
