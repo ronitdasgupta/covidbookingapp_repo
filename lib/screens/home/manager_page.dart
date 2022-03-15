@@ -20,8 +20,8 @@ class _ManagerPageState extends State<ManagerPage> {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
 
-  bool startTimeChanged = true;
-  bool endTimeChanged = true;
+  bool startTimeChanged = false;
+  bool endTimeChanged = false;
   //bool isButtonWorking = true;
 
   String buttonText1 = "Select Start Time";
@@ -66,15 +66,15 @@ class _ManagerPageState extends State<ManagerPage> {
 
 
 
-  List<String> calculateSlots() {
+  List<String> calculateSlots(TimeOfDay startTime, TimeOfDay endTime, Duration _initialDuration) {
     // 1. Calculate total hours the business is running
 
-    //List<String> slotString = [];
-    //slotString.add("9:00");
+    List<String> slotString = [];
+    slotString.add("9:00");
 
     // Converting String from buttons into TimeOfDay type
-    TimeOfDay _startTime = TimeOfDay(hour:int.parse(getStartTimeText().split(":")[0]),minute: int.parse(getStartTimeText().split(":")[1]));
-    TimeOfDay _endTime = TimeOfDay(hour:int.parse(getEndTimeText().split(":")[0]),minute: int.parse(getEndTimeText().split(":")[1]));
+    TimeOfDay _startTime = TimeOfDay(hour:int.parse(buttonText1.split(":")[0]),minute: int.parse(buttonText1.split(":")[1]));
+    TimeOfDay _endTime = TimeOfDay(hour:int.parse(buttonText2.split(":")[0]),minute: int.parse(buttonText2.split(":")[1]));
 
     // Converting TimeOfDay to DateTime type
     // Do not actually need the year, month, or day simply using today's date to format the TimeOfDay into DateTime type
@@ -85,23 +85,36 @@ class _ManagerPageState extends State<ManagerPage> {
     DateTime endTimeDateTime = new DateTime(now2.year, now2.month, now2.day, _endTime.hour, _endTime.minute);
 
     // Subtracting end time and start time to get total minutes the business is running
-    int minutesOpen = endTimeDateTime.difference(startTimeDateTime).inMinutes;
+    var minutesOpen = endTimeDateTime.difference(startTimeDateTime).inMinutes;
 
     // Converts the minutes into hours:minutes
-    // String hoursOpen = durationToString(minutesOpen);
+    String hoursOpen = durationToString(minutesOpen);
 
     // 2. Divide the total hours open by the slot length and add 1 to get the number of slots available
     //Duration test = _initialDuration / _initialDuration;
 
-    DateTime addDateTime = startTimeDateTime;
-    List<String> slotString = [];
+    int countSlots = 0;
+    //int currentHoursLeft = (Int)hoursOpen;
+    TimeOfDay _currentHoursLeft = TimeOfDay(hour:int.parse(hoursOpen.split(":")[0]),minute: int.parse(hoursOpen.split(":")[1]));
+    final now3 = new DateTime.now();
+    DateTime currentHoursLeftDateTime = new DateTime(now3.year, now3.month, now3.day, _currentHoursLeft.hour, _currentHoursLeft.minute);
 
-    int numberOfSlots = (minutesOpen ~/ _initialDuration.inMinutes);
-    for(int i = 0; i <= numberOfSlots; i++) {
-      String formatDateTime = DateFormat.Hm().format(startTimeDateTime);
-      slotString.add(formatDateTime);
-      startTimeDateTime = startTimeDateTime.add(_initialDuration);
+    //for(int i = 0; i < )
+    //while(currentHoursLeftDateTime != )
+
+    String duration = _printDuration(_initialDuration);
+    TimeOfDay _durationTOD = TimeOfDay(hour:int.parse(duration.split(":")[0]),minute: int.parse(duration.split(":")[1]));
+    final now4 = new DateTime.now();
+    DateTime durationDateTime = new DateTime(now4.year, now4.month, now4.day, _durationTOD.hour, _durationTOD.minute);
+
+    while(currentHoursLeftDateTime.difference(durationDateTime).inMinutes > 0) {
+      // Having trouble with this LINE OF CODE
+      // IT IS GETTING THE SAME DIFFERENCE EVERY TIME IT GOES THROUGH THE LOOP
+      int currentHours = currentHoursLeftDateTime.difference(durationDateTime).inMinutes;
+      countSlots++;
     }
+
+    DateTime slotFinderHelper = new DateTime(2022, 03, 06, 0, 0);
 
     /*
     while(slotFinderHelper != currentHoursLeftDateTime)
@@ -191,21 +204,21 @@ class _ManagerPageState extends State<ManagerPage> {
               Text(
                 "Start Time",
                 style: TextStyle(
-                  fontSize: 20.0
+                    fontSize: 20.0
                 ),
               ),
               ElevatedButton(
-                child: Text(
-                  getStartTimeText(),
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  startTimeChanged = !startTimeChanged;
-                  pickStartTime(context);
-                  setState(() {
-                    startTimeChanged == true ? buttonText1 : buttonText1 = getStartTimeText();
-                  });
-                }
+                  child: Text(
+                    getStartTimeText(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    startTimeChanged = !startTimeChanged;
+                    pickStartTime(context);
+                    setState(() {
+                      startTimeChanged == true ? buttonText1 : buttonText1 = "${startTime?.hour}: ${startTime?.minute}";
+                    });
+                  }
               ),
               SizedBox(height: 20.0),
               Text(
@@ -227,13 +240,13 @@ class _ManagerPageState extends State<ManagerPage> {
                     });
                   }
               ),
-            DurationPicker(
-              duration: _initialDuration,
-              onChange: (val) {
-                this.setState(() => _initialDuration = val);
-              },
-              snapToMins: 5.0,
-            ),
+              DurationPicker(
+                duration: _initialDuration,
+                onChange: (val) {
+                  this.setState(() => _initialDuration = val);
+                },
+                snapToMins: 5.0,
+              ),
 
               /*
               DropDownButton<String>(
@@ -249,35 +262,29 @@ class _ManagerPageState extends State<ManagerPage> {
                   onChanged: (value) => setState(() => this.value = value as String?)
               ),
               ElevatedButton(
-                child: Text(
-                  "Submit",
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () async {
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
 
-                  Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Submitted Successfully!",
+                    Scaffold.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          "Submitted Successfully!",
+                        ),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
                       ),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                    );
 
-                  if(value == "Sunday") {
-                    //updateBusinessHoursInfoSunday
-                    List<String> slots = calculateSlots();
-                    dynamic result = await businessHours.updateBusinessHoursInfoSunday(getStartTimeText(), getEndTimeText(), true, _initialDuration.inMinutes, slots);
-                    if(result == null) {
-                      setState(() {
-                        print('error');
-                      });
+                    if(value == "Sunday") {
+                      //updateBusinessHoursInfoSunday
+                      //dynamic result = businessHours.updateBusinessHoursInfoSunday(buttonText1, buttonText2, false, _initialDuration, slots);
                     }
-                  }
 
-                  /*
+                    /*
                   SnackBar(
                     content: Text(
                       "Submitted Successfully!",
@@ -287,7 +294,7 @@ class _ManagerPageState extends State<ManagerPage> {
                     behavior: SnackBarBehavior.floating,
                   );
                   */
-                }
+                  }
               ),
 
 
