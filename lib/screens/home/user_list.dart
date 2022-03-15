@@ -28,12 +28,12 @@ class _UserListState extends State<UserList> {
     }
     );
 
-
     /*
-    for(var doc in users?.docs) {
-      print(doc.data());
-    }
+    return Container(
+
+    );
      */
+
 
     //print(users);
     if (users != null && users.isNotEmpty)

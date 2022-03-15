@@ -1,5 +1,5 @@
 import 'package:covidbookingapp_repo/models/user.dart';
-import 'package:covidbookingapp_repo/services/businessHoursCollection.dart';
+import 'package:covidbookingapp_repo/services/businessHourDayCollection.dart';
 import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
