@@ -3,6 +3,7 @@ import 'package:covidbookingapp_repo/models/days.dart';
 import 'package:covidbookingapp_repo/screens/home/days_list.dart';
 import 'package:covidbookingapp_repo/screens/home/days_widget.dart';
 import 'package:covidbookingapp_repo/screens/wrapper.dart';
+import 'package:covidbookingapp_repo/services/appointmentsCollection.dart';
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:covidbookingapp_repo/services/businessHourDayCollection.dart';
 import 'package:covidbookingapp_repo/services/businessHoursCollection.dart';
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 //import 'models/user.dart';
 import 'package:covidbookingapp_repo/models/user.dart';
 
+import 'models/appointmentInfo.dart';
 import 'models/businessHours.dart';
 
 
@@ -45,6 +47,10 @@ class MyApp extends StatelessWidget {
         ),
         StreamProvider<List<BusinessHours>>.value(
           value: BusinessHoursCollection().businessInfo,
+          initialData: [],
+        ),
+        StreamProvider<List<AppointmentsInfo>>.value(
+          value: AppointmentsCollection().appointmentInfo,
           initialData: [],
         ),
       ],

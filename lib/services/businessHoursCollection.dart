@@ -24,6 +24,7 @@ class BusinessHoursCollection{
           isholiday: doc.get('isholiday') ?? true,
           slotintervals: doc.get('slotintervals') ?? 0,
           // slots: doc.get('slots') ?? List<String>,
+          slots: List.from(doc.get('slots')),
         );
       }).toList();
     } catch(e) {
@@ -36,6 +37,7 @@ class BusinessHoursCollection{
           isholiday: doc.get('isholiday') ?? true,
           slotintervals: doc.get('slotintervals') ?? 0,
           // slots: doc.get('slots') ?? List<String>,
+          slots: List.from(doc.get('slots')),
         );
       }).toList();
     }

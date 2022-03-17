@@ -1,3 +1,4 @@
+import 'package:covidbookingapp_repo/screens/home/manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covidbookingapp_repo/services/businessHourDayCollection.dart';
@@ -15,6 +16,10 @@ import '../../services/auth.dart';
 class AddDayForm extends StatefulWidget {
 
   final AuthService _auth = AuthService();
+
+  // final BusinessHours businessHours;
+
+  // AddDayForm({ required this.businessHours });
 
   @override
   _AddDayFormState createState() => _AddDayFormState();
@@ -38,6 +43,8 @@ class _AddDayFormState extends State<AddDayForm> {
   List<String> _currentSlots = [];
 
   bool _currentIsHoliday = true;
+
+  List<String> _availableDays = [];
 
 
   /*
@@ -190,9 +197,47 @@ class _AddDayFormState extends State<AddDayForm> {
   final days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   // String? value;
 
+
+
+
+
+
   @override
 
   Widget build(BuildContext context) {
+
+    // final BusinessHours businessHours;
+
+    final allBusinessHours = Provider.of<List<BusinessHours>>(context);
+    print(allBusinessHours);
+
+    // businessHours.start;
+
+    allBusinessHours.forEach((dayIsAvailable) {
+      if(allBusinessHours.contains(dayIsAvailable.day == true)) {
+        //_availableDays.add(dayIsAvailable.day);
+        days.remove(dayIsAvailable.day);
+      }
+    });
+
+    /*
+    allBusinessHours.forEach((dayIsAvailable) {
+      if(allBusinessHours.contains(businessHours.day)) {
+        continue;
+      }
+    });
+     */
+
+    /*
+    getAvailableDays() {
+      allBusinessHours.forEach(dayIsAvailable) {
+        print(dayIsAvailagle);
+      };
+    }
+     */
+
+
+
 
     // final businessHours = Provider.of<BusinessHours?>(context);
 
@@ -256,12 +301,15 @@ class _AddDayFormState extends State<AddDayForm> {
       ),
     );
 
+    /*
     return StreamBuilder<BusinessHours>(
         stream: BusinessHourDayCollection(dayOfWeek: _currentDay).businessHoursForADayFromSnapshot,
         // stream: BusinessHourDayCollection(dayOfWeek: _currentDay).businessInfo,
         builder: (context, snapshot) {
           if(snapshot.hasData) {
             BusinessHours businessHours = snapshot.data as BusinessHours;
+
+     */
 
             return Scaffold(
               // backgroundColor: Colors.black,
@@ -358,7 +406,8 @@ class _AddDayFormState extends State<AddDayForm> {
                           ),
                           onPressed: () async {
 
-                            Scaffold.of(context).showSnackBar(
+
+                              /*
                               SnackBar(
                                 content: Text(
                                   "Submitted Successfully!",
@@ -366,21 +415,24 @@ class _AddDayFormState extends State<AddDayForm> {
                                 backgroundColor: Colors.green,
                                 duration: Duration(seconds: 2),
                                 behavior: SnackBarBehavior.floating,
-                              ),
-                            );
+                              );
+                               */
 
 
                             //updateBusinessHoursInfoSunday
                             List<String> _currentSlots = calculateSlots();
 
-                            final BusinessHourDayCollection businessHourDayCollection = BusinessHourDayCollection(dayOfWeek: _currentDay);
+                            final BusinessHourDayCollection businessHours = BusinessHourDayCollection(dayOfWeek: _currentDay);
 
-                            dynamic result = await businessHourDayCollection.updateBusinessHoursInfo(_currentStartTimeString, _currentEndTimeString, _currentIsHoliday, _currentSlotInterval, _currentSlots);
+                            dynamic result = await businessHours.updateBusinessHoursInfo(_currentStartTimeString, _currentEndTimeString, _currentIsHoliday, _currentSlotInterval, _currentSlots, _currentDay);
                             if(result == null) {
                               setState(() {
                                 print('error');
                               });
                             }
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => Manager()),
+                            );
                           }
                       ),
                     ],
@@ -388,11 +440,12 @@ class _AddDayFormState extends State<AddDayForm> {
                 ),
               ),
             );
-          } else {
+          } /*else {
             return LoadingScreen();
           }
+          */
 
         }
-    );
-  }
-}
+
+
+

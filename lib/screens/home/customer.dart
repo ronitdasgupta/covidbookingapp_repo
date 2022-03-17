@@ -3,6 +3,8 @@ import 'package:covidbookingapp_repo/models/appointmentInfo.dart';
 import 'package:covidbookingapp_repo/services/businessHourDayCollection.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../models/businessHours.dart';
+import '../../models/user.dart';
 import '../../models/users.dart';
 import '../../services/auth.dart';
 import 'package:covidbookingapp_repo/services/usersCollection.dart';
@@ -10,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:covidbookingapp_repo/screens/home/user_list.dart';
 import 'package:covidbookingapp_repo/services/appointmentsCollection.dart';
-import 'package:covidbookingapp_repo/screens/home/appointments_list.dart';
+
+import '../../services/businessHoursCollection.dart';
 
 class Customer extends StatefulWidget {
   @override
@@ -74,6 +77,22 @@ class _CustomerState extends State<Customer> {
 
     }
 
+    final user = Provider.of<MyUser?>(context);
+    print(user);
+
+    final allBusinessHours = Provider.of<List<BusinessHours>>(context);
+    print(allBusinessHours);
+
+    final allAppointments = Provider.of<List<AppointmentsInfo>>(context);
+    print(allAppointments);
+
+
+
+    /*
+    final users = Provider.of<List<Users>?>(context);
+    print(users);
+     */
+
     // final slots = Provider.of<QuerySnapshot>(context);
     // print(slots);
 
@@ -81,133 +100,133 @@ class _CustomerState extends State<Customer> {
         //value: AppointmentsCollection(dateString: '').apt,
         //initialData: null,
         //initialData: null,
-          return Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-                title: Text('Select Appointment'),
+              return Scaffold(
+                backgroundColor: Colors.white,
+                appBar: AppBar(
+                    title: Text('Select Appointment'),
+                    backgroundColor: Colors.black,
+                    actions: <Widget>[
+                      TextButton.icon(
+                        icon: Icon(Icons.person),
+                        label: Text('Logout'),
+                        onPressed: () async {
+                          await _auth.signOut();
+                        },
+                      )
+                    ]
+                ),
+                //body: AppointmentsList(),
+              body: Center(
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Date",
+                        style: TextStyle(
+                            fontSize: 20.0
+                        ),
+                      ),
+                      ElevatedButton(
+                        child: Text(
+                          getText(),
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          isChanged = !isChanged;
+                          pickDate(context);
+                          setState(() {
+                            isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
+                          });
+                        },
+                      ),
+                      SizedBox(height: 20.0),
+                      Text(
+                        "Time",
+                        style: TextStyle(
+                          fontSize: 20.0
+                        ),
+                      ),
+                      ElevatedButton(
+                        child: Text(
+                          "Select Time",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          isChanged =! isChanged;
+                          // PUT SOMETHING HERE
+                          setState(() {
+                            isChanged == true ? buttonText2 = "Select Time" : buttonText2 = "4:00";
+                          });
+                        }
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+
+
+
+                /*
+              body: Container(
+                //padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+                child: ElevatedButton(
+                  onPressed: () {
+
+                  },
+                  child: Text(
+                    'Sign in',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+               */
+                //body: UserList(),
+                /*
+              body: TableCalendar(
+                focusedDay: selectedDay,
+                firstDay: DateTime.now(),
+                lastDay: DateTime(2050),
+                calendarFormat: format,
+                onFormatChanged: (CalendarFormat _format){
+                  setState(() {
+                    format = _format;
+                  });
+                },
+                onDaySelected: (DateTime selectDay, DateTime focusDay){
+                  setState((){
+                    selectedDay = selectDay;
+                    focusedDay = focusDay;
+                  });
+                  //_showAppointmentInfo();
+                  //print(focusedDay);
+                },
+                calendarStyle: CalendarStyle(
+                  isTodayHighlighted: true,
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.circle,
+                  ),
+                  selectedTextStyle: TextStyle(color: Colors.white),
+                ),
+                selectedDayPredicate: (DateTime date){
+                  return isSameDay(selectedDay, date);
+                },
+                //startingDayOfWeek: StartingDayOfWeek.sunday,
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AppointmentsScreen()),
+                  );
+                },
+                child: Icon(
+                Icons.schedule_sharp,
+              ),
                 backgroundColor: Colors.black,
-                actions: <Widget>[
-                  TextButton.icon(
-                    icon: Icon(Icons.person),
-                    label: Text('Logout'),
-                    onPressed: () async {
-                      await _auth.signOut();
-                    },
-                  )
-                ]
-            ),
-            //body: AppointmentsList(),
-          body: Center(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Date",
-                    style: TextStyle(
-                        fontSize: 20.0
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: Text(
-                      getText(),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      isChanged = !isChanged;
-                      pickDate(context);
-                      setState(() {
-                        isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
-                      });
-                    },
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    "Time",
-                    style: TextStyle(
-                      fontSize: 20.0
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: Text(
-                      "Select Time",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () {
-                      isChanged =! isChanged;
-                      // PUT SOMETHING HERE
-                      setState(() {
-                        isChanged == true ? buttonText2 = "Select Time" : buttonText2 = "4:00";
-                      });
-                    }
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-
-
-
-            /*
-          body: Container(
-            //padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-            child: ElevatedButton(
-              onPressed: () {
-
-              },
-              child: Text(
-                'Sign in',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-           */
-            //body: UserList(),
-            /*
-          body: TableCalendar(
-            focusedDay: selectedDay,
-            firstDay: DateTime.now(),
-            lastDay: DateTime(2050),
-            calendarFormat: format,
-            onFormatChanged: (CalendarFormat _format){
-              setState(() {
-                format = _format;
-              });
-            },
-            onDaySelected: (DateTime selectDay, DateTime focusDay){
-              setState((){
-                selectedDay = selectDay;
-                focusedDay = focusDay;
-              });
-              //_showAppointmentInfo();
-              //print(focusedDay);
-            },
-            calendarStyle: CalendarStyle(
-              isTodayHighlighted: true,
-              selectedDecoration: BoxDecoration(
-                color: Colors.black,
-                shape: BoxShape.circle,
-              ),
-              selectedTextStyle: TextStyle(color: Colors.white),
-            ),
-            selectedDayPredicate: (DateTime date){
-              return isSameDay(selectedDay, date);
-            },
-            //startingDayOfWeek: StartingDayOfWeek.sunday,
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AppointmentsScreen()),
+              ), */
               );
-            },
-            child: Icon(
-            Icons.schedule_sharp,
-          ),
-            backgroundColor: Colors.black,
-          ), */
-          );
 
 
 

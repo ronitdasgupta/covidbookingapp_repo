@@ -13,14 +13,14 @@ class BusinessHourDayCollection{
   // collection reference
   final CollectionReference businessHoursCollection = FirebaseFirestore.instance.collection('BusinessHours');
 
-  Future updateBusinessHoursInfo(String start, String end, bool isholiday, int slotintervals, List<String> slots) async {
+  Future updateBusinessHoursInfo(String start, String end, bool isholiday, int slotintervals, List<String> slots, String day) async {
     return await businessHoursCollection.doc(dayOfWeek).set({
       'start': start,
       'end': end,
       'isholiday': isholiday,
       'slotintervals': slotintervals,
       'slots': slots,
-      'day': dayOfWeek,
+      'day': day,
     });
   }
 
@@ -36,6 +36,7 @@ class BusinessHourDayCollection{
         isholiday: doc.get('isholiday') ?? true,
         slotintervals: doc.get('slotintervals') ?? 0,
         // slots: doc.get('slots') ?? List<String>,
+        slots: List.from(doc.get('slots')),
       );
     }).toList();
   }
@@ -72,6 +73,7 @@ class BusinessHourDayCollection{
         isholiday: snapshot['isholiday'],
         slotintervals: snapshot['slotintervals'],
         // slots: snapshot['slots'],
+        slots: List.from(snapshot['slots']),
         );
   }
 

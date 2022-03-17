@@ -12,24 +12,29 @@ import 'package:provider/provider.dart';
 import '../../models/businessHours.dart';
 import '../../models/users.dart';
 import '../../services/usersCollection.dart';
+import 'certain_days.dart';
 
 class Manager extends StatelessWidget {
 
   final AuthService _auth = AuthService();
+
 
   //final slots = ['15 minutes', '30 minutes', ]
 
   @override
   Widget build(BuildContext context) {
 
-      void _addDaysSheet() {
-        showModalBottomSheet(context: context, builder: (context) {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-            child: AddDayForm(),
-          );
-        });
-      }
+    // final allBusinessHours = Provider.of<List<BusinessHours>>(context);
+    // print(allBusinessHours);
+
+    /*
+    return ListView.builder(
+        itemCount: allBusinessHours.length,
+        itemBuilder: (context, index) {
+          return DaysWidget(businessHours: allBusinessHours[index]);
+        }
+    );
+     */
 
       return StreamProvider<List<BusinessHours>>.value(
         value: BusinessHoursCollection().businessInfo,
@@ -65,6 +70,8 @@ class Manager extends StatelessWidget {
                   label: Text('add day'),
                   onPressed: () {
                     Navigator.push(context,
+                      // MaterialPageRoute(builder: (context) => AddDayForm(businessHours: allBusinessHours[index])),
+                      // MaterialPageRoute(builder: (context) => CertainDays()),
                       MaterialPageRoute(builder: (context) => AddDayForm()),
                     );
                   },
@@ -74,5 +81,6 @@ class Manager extends StatelessWidget {
           body: DaysList(),
         ),
       );
+
   }
 }
