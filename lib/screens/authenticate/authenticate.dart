@@ -1,6 +1,10 @@
 import 'package:covidbookingapp_repo/screens/authenticate/register.dart';
 import 'package:covidbookingapp_repo/screens/authenticate/sign_in.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../models/user.dart';
+import '../../services/usersCollection.dart';
 
 class Authenticate extends StatefulWidget {
   const Authenticate({Key? key}) : super(key: key);
@@ -19,6 +23,8 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
+
+
     if(showSignIn) {
       return SignIn(toggleView: toggleView);
     } else{

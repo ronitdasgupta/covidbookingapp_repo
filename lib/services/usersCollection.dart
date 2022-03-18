@@ -28,6 +28,17 @@ class UsersCollection{
     });
   }
 
+  Future updateUserAppointment(String name, String phoneNumber, String email, String aptDate, String aptTime, String day) async {
+    return await users.doc(uid).set({
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'aptDate': aptDate,
+      'aptTime': aptTime,
+      'day': day,
+    });
+  }
+
   // user list from snapshot
   List<Users> _userListFromSnapshot(QuerySnapshot snapshot){
     return snapshot.docs.map((doc){

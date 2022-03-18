@@ -7,6 +7,7 @@ import 'package:covidbookingapp_repo/services/appointmentsCollection.dart';
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:covidbookingapp_repo/services/businessHourDayCollection.dart';
 import 'package:covidbookingapp_repo/services/businessHoursCollection.dart';
+import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

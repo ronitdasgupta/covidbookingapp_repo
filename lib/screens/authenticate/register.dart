@@ -1,7 +1,10 @@
 import 'package:covidbookingapp_repo/services/auth.dart';
+import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:covidbookingapp_repo/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../models/user.dart';
 import '../../shared/loading.dart';
 
 class Register extends StatefulWidget {
@@ -28,6 +31,10 @@ class _RegisterState extends State<Register> {
   String phoneNumber = '';
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<MyUser?>(context);
+
+
     return loading ? LoadingScreen() : Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

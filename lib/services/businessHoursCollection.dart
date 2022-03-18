@@ -14,7 +14,7 @@ class BusinessHoursCollection{
 
   // business info from snapshot
 
-  List<BusinessHours> _businessHoursFromSnapshot(QuerySnapshot snapshot) {
+   List<BusinessHours> _businessHoursFromSnapshot(QuerySnapshot snapshot)  {
     try{
       return snapshot.docs.map<BusinessHours>((doc){
         return BusinessHours(
@@ -108,12 +108,7 @@ class BusinessHoursCollection{
 
   // get businessInfo stream
   Stream<List<BusinessHours>> get businessInfo {
-    try{
       return businessHoursCollection.snapshots().map<List<BusinessHours>>(_businessHoursFromSnapshot);
-    } catch(e) {
-      print("Stream function not working");
-      return businessHoursCollection.snapshots().map<List<BusinessHours>>(_businessHoursFromSnapshot);
-    }
   }
 
 

@@ -195,6 +195,9 @@ class _AddDayFormState extends State<AddDayForm> {
   Duration _initialDuration = Duration(hours: 0, minutes: 0);
 
   final days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  // final daysList = [["Sunday", false], ["Monday", false], ["Tuesday", false], ["Wednesday", false], ["Thursday", false], ["Friday", false], ["Saturday", false]];
+
   // String? value;
 
 
@@ -209,16 +212,10 @@ class _AddDayFormState extends State<AddDayForm> {
     // final BusinessHours businessHours;
 
     final allBusinessHours = Provider.of<List<BusinessHours>>(context);
-    print(allBusinessHours);
 
     // businessHours.start;
 
-    allBusinessHours.forEach((dayIsAvailable) {
-      if(allBusinessHours.contains(dayIsAvailable.day == true)) {
-        //_availableDays.add(dayIsAvailable.day);
-        days.remove(dayIsAvailable.day);
-      }
-    });
+
 
     /*
     allBusinessHours.forEach((dayIsAvailable) {
@@ -309,6 +306,48 @@ class _AddDayFormState extends State<AddDayForm> {
           if(snapshot.hasData) {
             BusinessHours businessHours = snapshot.data as BusinessHours;
 
+     */
+
+    /*
+    allBusinessHours.forEach((dayIsAvailable) {
+      if(days.contains(dayIsAvailable.day == true)) {
+        //_availableDays.add(dayIsAvailable.day);
+        days.remove(dayIsAvailable.day);
+      }
+    });
+     */
+
+
+    /*
+    List<String> openDays = [];
+
+    bool dayFound = false;
+
+    allBusinessHours.forEach((dayIsAvailable) {
+      while(dayFound == false) {
+        days.forEach((day) {
+          if(day == dayIsAvailable.day) {
+            // days.remove(day);
+            dayFound = true;
+          }
+        });
+      }
+
+      dayFound = false;
+      if(dayFound == false) {
+        openDays.add(dayIsAvailable.day);
+      }
+    });
+     */
+
+    /*
+    List<String> openDays = [];
+
+    allBusinessHours.forEach((dayIsAvailable) {
+      if(days.contains(dayIsAvailable.day == false)) {
+        openDays.add(dayIsAvailable.day);
+      }
+    });
      */
 
             return Scaffold(
