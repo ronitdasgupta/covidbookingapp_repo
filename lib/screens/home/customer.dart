@@ -19,6 +19,7 @@ import '../../services/businessHoursCollection.dart';
 class Customer extends StatefulWidget {
   @override
   State<Customer> createState() => _CustomerState();
+
 }
 
 class _CustomerState extends State<Customer> {
@@ -98,6 +99,9 @@ class _CustomerState extends State<Customer> {
     print(allAppointments);
 
     final userData = Provider.of<UserData?>(context);
+
+    // selectedDate = userData?.aptDate ?? '';
+    // _currentSlot = userData?.aptTime ?? '';
 
     Future<void> writeNewDate() async {
       // 1. Case if the date is not found in the Appointments collection
@@ -359,7 +363,7 @@ class _CustomerState extends State<Customer> {
                       ),
                       ElevatedButton(
                         child: Text(
-                          selectedDate = getText(),
+                          selectedDate = userData?.aptDate ?? getText(),
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
@@ -379,7 +383,8 @@ class _CustomerState extends State<Customer> {
                         ),
                       ),
                       DropdownButtonFormField(
-                          hint: Text("Select a Time"),
+                        //value: userData?.aptTime ?? _currentSlot,
+                          hint: Text(userData?.aptTime ?? "Select Time"),
                           items: slots.map((slot) {
                             return DropdownMenuItem(
                               value: slot,

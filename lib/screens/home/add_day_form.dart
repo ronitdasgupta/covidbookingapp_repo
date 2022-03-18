@@ -15,8 +15,7 @@ import '../../services/auth.dart';
 
 class AddDayForm extends StatefulWidget {
 
-  final AuthService _auth = AuthService();
-
+  final AuthService auth = AuthService();
   // final BusinessHours businessHours;
 
   // AddDayForm({ required this.businessHours });
@@ -317,6 +316,21 @@ class _AddDayFormState extends State<AddDayForm> {
     });
      */
 
+    List<String> selectableDays = [];
+
+    days.forEach((day) {
+      bool isFound = false;
+      allBusinessHours.forEach((dayIsAvailable) {
+        if(day == dayIsAvailable.day) {
+          isFound = true;
+        }
+      });
+      if(isFound == false) {
+        selectableDays.add(day);
+      }
+    });
+
+
 
     /*
     List<String> openDays = [];
@@ -378,7 +392,7 @@ class _AddDayFormState extends State<AddDayForm> {
                       SizedBox(height: 20.0),
                       DropdownButtonFormField(
                         hint: Text("Select a Day"),
-                        items: days.map((day) {
+                        items: selectableDays.map((day) {
                           return DropdownMenuItem(
                             value: day,
                             child: Text("$day"),
