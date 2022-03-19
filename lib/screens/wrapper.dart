@@ -1,5 +1,6 @@
 import 'package:covidbookingapp_repo/models/user.dart';
 import 'package:covidbookingapp_repo/screens/authenticate/authenticate.dart';
+import 'package:covidbookingapp_repo/screens/authenticate/verify.dart';
 import 'package:covidbookingapp_repo/screens/home/customer.dart';
 import 'package:covidbookingapp_repo/screens/home/customer_wrapper.dart';
 import 'package:covidbookingapp_repo/screens/home/days_list.dart';
@@ -37,7 +38,8 @@ class Wrapper extends StatelessWidget {
     }
      else{
       // return Customer();
-      return CustomerWrapper();
+      // return CustomerWrapper();
+      return VerifyScreen();
     }
   }
 }

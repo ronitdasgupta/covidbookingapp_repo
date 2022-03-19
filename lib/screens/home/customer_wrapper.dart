@@ -1,4 +1,5 @@
 import 'package:covidbookingapp_repo/models/user.dart';
+import 'package:covidbookingapp_repo/screens/authenticate/authenticate.dart';
 import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,11 @@ class CustomerWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final user = Provider.of<MyUser?>(context);
+
+    if(user == null) {
+      return Authenticate();
+    }
+
 
     return StreamProvider<UserData?>.value(
       value: UsersCollection(uid: user?.uid ?? '').userData,

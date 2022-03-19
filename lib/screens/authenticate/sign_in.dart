@@ -54,10 +54,10 @@ class _SignInState extends State<SignIn> {
             children: <Widget> [
               SizedBox(height: 20.0),
               TextFormField(
-                  decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                  decoration: textInputDecoration.copyWith(hintText: 'Email', prefixIcon: Icon(Icons.email)),
                   validator: (String? value){
                     if(value != null && value.isEmpty){
-                      return 'Enter an email';
+                      return 'Enter a valid email';
                     }
                     return null;
                   },
@@ -67,7 +67,7 @@ class _SignInState extends State<SignIn> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                decoration: textInputDecoration.copyWith(hintText: 'Password', prefixIcon: Icon(Icons.password)),
                 obscureText: true,
                   validator: (String? value){
                     if(value != null && value.length < 6){
@@ -92,7 +92,7 @@ class _SignInState extends State<SignIn> {
                     // Validating through Firebase
                     if(result == null) {
                       setState(() {
-                        error = 'please change the credentials';
+                        error = 'Invalid credentials';
                         loading = false;
                       });
                     }
@@ -102,7 +102,7 @@ class _SignInState extends State<SignIn> {
               SizedBox(height: 12.0),
               Text(
                 error,
-                style: TextStyle(color: Colors. red, fontSize: 14.0),
+                style: TextStyle(color: Colors. red, fontSize: 15.0),
               ),
             ],
           ),

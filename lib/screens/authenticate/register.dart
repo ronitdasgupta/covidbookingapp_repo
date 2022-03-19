@@ -1,3 +1,4 @@
+import 'package:covidbookingapp_repo/screens/authenticate/verify.dart';
 import 'package:covidbookingapp_repo/services/auth.dart';
 import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:covidbookingapp_repo/shared/constants.dart';
@@ -36,6 +37,7 @@ class _RegisterState extends State<Register> {
 
 
     return loading ? LoadingScreen() : Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -60,7 +62,7 @@ class _RegisterState extends State<Register> {
             children: <Widget> [
               sizedBoxHeight,
               TextFormField(
-                  decoration: textInputDecoration.copyWith(hintText: 'Name'),
+                  decoration: textInputDecoration.copyWith(hintText: 'Name', prefixIcon: Icon(Icons.person)),
                   validator: (String? value){
                     if(value != null && value.isEmpty){
                       return 'Enter a name';
@@ -90,7 +92,7 @@ class _RegisterState extends State<Register> {
                */
               //sizedBoxHeight,
               TextFormField(
-                decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                decoration: textInputDecoration.copyWith(hintText: 'Email', prefixIcon: Icon(Icons.email)),
                 validator: (String? value){
                   if(value != null && value.isEmpty){
                     return 'Enter an email';
@@ -104,7 +106,7 @@ class _RegisterState extends State<Register> {
               ),
               sizedBoxHeight,
               TextFormField(
-                  decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                  decoration: textInputDecoration.copyWith(hintText: 'Password', prefixIcon: Icon(Icons.password)),
                   obscureText: true,
                   validator: (String? value){
                     if(value != null && value.length < 6){
@@ -127,7 +129,9 @@ class _RegisterState extends State<Register> {
                     if(_formKey.currentState!.validate()){
                       setState(() => loading = true);
                       // Validating through Firebase
-                      dynamic result = await _auth.registerWithEmailAndPassword(email, password, name, phoneNumber);
+                      dynamic result = await _auth.registerWithEmailAndPassword(email, password, name, phoneNumber).then((_){
+                        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyScreen()));
+                      });
                       if(result == null) {
                         setState(() {
                           error = 'please change the credentials';
