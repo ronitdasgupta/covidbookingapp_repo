@@ -20,8 +20,8 @@ class CustomerWrapper extends StatelessWidget {
     final user = Provider.of<MyUser?>(context);
 
     if(user == null) {
-      // return Authenticate();
-      return Wrapper();
+      return Authenticate();
+      // return Wrapper();
     }
 
 

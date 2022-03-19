@@ -38,8 +38,13 @@ class Wrapper extends StatelessWidget {
     }
      else{
       // return Customer();
-      // return CustomerWrapper();
-      return VerifyScreen();
+      if(user.emailVerified) {
+        return CustomerWrapper();
+      } else {
+        return VerifyScreen();
+      }
+      return CustomerWrapper();
+      // return VerifyScreen();
     }
   }
 }

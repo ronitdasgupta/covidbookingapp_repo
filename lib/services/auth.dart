@@ -29,7 +29,7 @@ class AuthService{
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   MyUser? _userFromFirebaseUser(User? user) {
-    return user != null ? MyUser(uid: user.uid, email: user.email) : null;
+    return user != null ? MyUser(uid: user.uid, email: user.email, emailVerified: user.emailVerified) : null;
   }
 
 

@@ -1,8 +1,9 @@
 class MyUser{
   final String? uid;
   final String? email;
+  final bool emailVerified;
 
-  MyUser({ this.uid, this.email });
+  MyUser({ this.uid, this.email, required this.emailVerified });
 }
 
 class UserData{
