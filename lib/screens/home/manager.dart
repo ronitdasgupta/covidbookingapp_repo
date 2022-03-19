@@ -36,6 +36,8 @@ class Manager extends StatelessWidget {
     );
      */
 
+    final allBusinessHours = Provider.of<List<BusinessHours>>(context);
+
       return StreamProvider<List<BusinessHours>>.value(
         value: BusinessHoursCollection().businessInfo,
         initialData: [],
@@ -65,15 +67,46 @@ class Manager extends StatelessWidget {
                 ),
                  */
 
+
+
                 TextButton.icon(
                   icon: Icon(Icons.add),
                   label: Text('add day'),
                   onPressed: () {
-                    Navigator.push(context,
-                      // MaterialPageRoute(builder: (context) => AddDayForm(businessHours: allBusinessHours[index])),
-                      // MaterialPageRoute(builder: (context) => CertainDays()),
-                      MaterialPageRoute(builder: (context) => AddDayForm()),
-                    );
+                    if(allBusinessHours.length == 7) {
+                      final snackBar = SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.error_outline, size: 32),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                "All days have been selected",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            // Some code to undo the change.
+                          },
+                        ),
+                      );
+
+                      // Find the ScaffoldMessenger in the widget tree
+                      // and use it to show a SnackBar.
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    } else{
+                      Navigator.push(context,
+                        // MaterialPageRoute(builder: (context) => AddDayForm(businessHours: allBusinessHours[index])),
+                        // MaterialPageRoute(builder: (context) => CertainDays()),
+                        MaterialPageRoute(builder: (context) => AddDayForm()),
+                      );
+                    }
                   },
                 ),
               ]

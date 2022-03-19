@@ -36,32 +36,11 @@ class _AddDayFormState extends State<AddDayForm> {
 
   int _currentSlotInterval = 0;
 
-  String _currentDay = "Monday";
-  // String _currentDay = "";
-
-  List<String> _currentSlots = [];
+  String? _currentDay;
 
   bool _currentIsHoliday = true;
 
-  List<String> _availableDays = [];
 
-
-  /*
-  String? _currentStartTimeString;
-
-  String? _currentEndTimeString;
-
-  int? _currentSlotInterval;
-
-  String _currentDay = "Monday";
-
-  List<String> _currentSlots = [];
-
-  bool _currentIsHoliday = true;
-   */
-
-
-  // final BusinessHoursCollection businessHoursCollection = BusinessHoursCollection(dayOfWeek: _currentDay);
 
   TimeOfDay? startTime;
   TimeOfDay? endTime;
@@ -70,8 +49,6 @@ class _AddDayFormState extends State<AddDayForm> {
 
   bool startTimeChanged = true;
   bool endTimeChanged = true;
-  //bool isButtonWorking = true;
-
 
 
   String buttonText1 = "Select Start Time";
@@ -107,12 +84,7 @@ class _AddDayFormState extends State<AddDayForm> {
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
   }
 
-  String _printDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, "0");
-    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
-  }
+
 
 
 
@@ -153,21 +125,8 @@ class _AddDayFormState extends State<AddDayForm> {
       startTimeDateTime = startTimeDateTime.add(_initialDuration);
     }
 
-    /*
-    while(slotFinderHelper != currentHoursLeftDateTime)
-      {
-
-      }
-      */
-
-
-
     return slotString;
   }
-
-  //List<String> testing = calculateSlots(9:00, 17:00, 30);
-
-
 
   String getStartTimeText() {
     if(startTime == null) {
@@ -195,127 +154,87 @@ class _AddDayFormState extends State<AddDayForm> {
 
   final days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  // final daysList = [["Sunday", false], ["Monday", false], ["Tuesday", false], ["Wednesday", false], ["Thursday", false], ["Friday", false], ["Saturday", false]];
 
-  // String? value;
+  Future pickStartTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newStartTime = await showTimePicker(
+      context: context,
+      initialTime: startTime ?? initialTime,
+    );
+    if(newStartTime == null) {
+      return;
+    }
+
+    final hours = newStartTime.hour.toString().padLeft(2, '0');
+    final minutes = newStartTime.minute.toString().padLeft(2, '0');
 
 
 
+    setState(() {
+      startTime = newStartTime;
+      _currentStartTimeString = '$hours : $minutes';
+    });
+  }
 
+  Future pickEndTime(BuildContext context) async {
+    final initialTime = TimeOfDay(hour: 9, minute: 0);
+    final newEndTime = await showTimePicker(
+      context: context,
+      initialTime: endTime ?? initialTime,
+    );
+    if(newEndTime == null) {
+      return;
+    }
 
+    final hours = newEndTime.hour.toString().padLeft(2, '0');
+    final minutes = newEndTime.minute.toString().padLeft(2, '0');
+
+    setState(() {
+      endTime = newEndTime;
+      _currentEndTimeString = '$hours : $minutes';
+    });
+  }
 
   @override
 
   Widget build(BuildContext context) {
 
-    // final BusinessHours businessHours;
-
     final allBusinessHours = Provider.of<List<BusinessHours>>(context);
 
-    // businessHours.start;
-
-
-
-    /*
-    allBusinessHours.forEach((dayIsAvailable) {
-      if(allBusinessHours.contains(businessHours.day)) {
-        continue;
+    List<String> pickSelectableDays(List<String> selectableDays) {
+      const String NotinDb = "NotInDB";
+      final List weekDays = [["Sunday", NotinDb], ["Monday",NotinDb], ["Tuesday",NotinDb], ["Wednesday",NotinDb], ["Thursday",NotinDb], ["Friday",NotinDb], ["Saturday",NotinDb]];
+      for (var i=0; i<weekDays.length; i++)
+      {
+        for (var k=0; k<weekDays[i].length; k++)
+        {
+          allBusinessHours.forEach((dayIsAvailable) {
+            if(weekDays[i][0] == dayIsAvailable.day) {
+              weekDays[i][1]= "FoundInDB";
+            }
+          });
+          //print(weekDays[i][k]);
+        }
       }
-    });
-     */
-
-    /*
-    getAvailableDays() {
-      allBusinessHours.forEach(dayIsAvailable) {
-        print(dayIsAvailagle);
-      };
-    }
-     */
-
-
-
-
-    // final businessHours = Provider.of<BusinessHours?>(context);
-
-    /*
-    final businessInfo = Provider.of<QuerySnapshot>(context);
-    print(businessInfo);
-     */
-
-    // final BusinessHours businessHours = BusinessHoursCollection(dayOfWeek: _currentDay).businessHoursForADayFromSnapshot;
-
-    Future pickStartTime(BuildContext context) async {
-      final initialTime = TimeOfDay(hour: 9, minute: 0);
-      final newStartTime = await showTimePicker(
-        context: context,
-        initialTime: startTime ?? initialTime,
-      );
-      if(newStartTime == null) {
-        return;
+      for (var i=0; i<weekDays.length; i++)
+      {
+          if (weekDays[i][1]==NotinDb)
+          {
+            //Only adds the days that are not in the DB
+            selectableDays.add(weekDays[i][0]);
+          }
+          //print(weekDays[i][k]);
       }
-
-      final hours = newStartTime.hour.toString().padLeft(2, '0');
-      final minutes = newStartTime.minute.toString().padLeft(2, '0');
-
-
-
-      setState(() {
-        startTime = newStartTime;
-        // _currentStartTimeString = startTime?.hour.toString().padLeft(2, '0') ?? "" + ":" + startTime?.minute.toString().padLeft(2, '0');
-        _currentStartTimeString = '$hours : $minutes';
-      });
+      return selectableDays;
     }
 
-    Future pickEndTime(BuildContext context) async {
-      final initialTime = TimeOfDay(hour: 9, minute: 0);
-      final newEndTime = await showTimePicker(
-        context: context,
-        initialTime: endTime ?? initialTime,
-      );
-      if(newEndTime == null) {
-        return;
-      }
 
 
-      final hours = newEndTime.hour.toString().padLeft(2, '0');
-      final minutes = newEndTime.minute.toString().padLeft(2, '0');
+    List<String> selectableDays = [];
 
-
-
-      setState(() {
-        endTime = newEndTime;
-        // _currentStartTimeString = startTime?.hour.toString().padLeft(2, '0') ?? "" + ":" + startTime?.minute.toString().padLeft(2, '0');
-        _currentEndTimeString = '$hours : $minutes';
-      });
-    }
-
-    DropdownMenuItem<String> dropDownDays(String day) => DropdownMenuItem(
-      value: day,
-      child: Text(
-        day,
-        style: TextStyle(fontSize: 20),
-      ),
-    );
+    selectableDays = pickSelectableDays(selectableDays);
 
     /*
-    return StreamBuilder<BusinessHours>(
-        stream: BusinessHourDayCollection(dayOfWeek: _currentDay).businessHoursForADayFromSnapshot,
-        // stream: BusinessHourDayCollection(dayOfWeek: _currentDay).businessInfo,
-        builder: (context, snapshot) {
-          if(snapshot.hasData) {
-            BusinessHours businessHours = snapshot.data as BusinessHours;
-
-     */
-
-    /*
-    allBusinessHours.forEach((dayIsAvailable) {
-      if(days.contains(dayIsAvailable.day == true)) {
-        //_availableDays.add(dayIsAvailable.day);
-        days.remove(dayIsAvailable.day);
-      }
-    });
-     */
-
     List<String> selectableDays = [];
 
     days.forEach((day) {
@@ -329,43 +248,9 @@ class _AddDayFormState extends State<AddDayForm> {
         selectableDays.add(day);
       }
     });
-
-
-
-    /*
-    List<String> openDays = [];
-
-    bool dayFound = false;
-
-    allBusinessHours.forEach((dayIsAvailable) {
-      while(dayFound == false) {
-        days.forEach((day) {
-          if(day == dayIsAvailable.day) {
-            // days.remove(day);
-            dayFound = true;
-          }
-        });
-      }
-
-      dayFound = false;
-      if(dayFound == false) {
-        openDays.add(dayIsAvailable.day);
-      }
-    });
-     */
-
-    /*
-    List<String> openDays = [];
-
-    allBusinessHours.forEach((dayIsAvailable) {
-      if(days.contains(dayIsAvailable.day == false)) {
-        openDays.add(dayIsAvailable.day);
-      }
-    });
      */
 
             return Scaffold(
-              // backgroundColor: Colors.black,
               appBar: AppBar(
                   title: Text('Manager Page'),
                   backgroundColor: Colors.black,
@@ -374,7 +259,6 @@ class _AddDayFormState extends State<AddDayForm> {
                       icon: Icon(Icons.person),
                       label: Text('logout'),
                       onPressed: () async {
-                        // await _auth.signOut();
                       },
                     ),
                   ]
@@ -391,14 +275,15 @@ class _AddDayFormState extends State<AddDayForm> {
                       ),
                       SizedBox(height: 20.0),
                       DropdownButtonFormField(
-                        hint: Text("Select a Day"),
+                        value: _currentDay ?? selectableDays[0],
+                        // hint: Text("Select a Day"),
                         items: selectableDays.map((day) {
                           return DropdownMenuItem(
                             value: day,
                             child: Text("$day"),
                           );
                         }).toList(),
-                        onChanged: (day) => setState(() => _currentDay = (day as String?)!)
+                        onChanged: (val) => setState(() => _currentDay = (val as String?)!)
                       ),
                       Text(
                         "Start Time",
@@ -408,7 +293,6 @@ class _AddDayFormState extends State<AddDayForm> {
                       ),
                       ElevatedButton(
                           child: Text(
-                            // _currentStartTimeString == '' ? _currentStartTimeString: businessHours.start,
                             _currentStartTimeString = getStartTimeText(),
                             style: TextStyle(color: Colors.white),
                           ),
@@ -429,7 +313,6 @@ class _AddDayFormState extends State<AddDayForm> {
                       ),
                       ElevatedButton(
                           child: Text(
-                            // _currentEndTimeString == '' ? _currentEndTimeString: businessHours.end,
                             _currentEndTimeString = getEndTimeText(),
                             style: TextStyle(color: Colors.white),
                           ),
@@ -443,7 +326,6 @@ class _AddDayFormState extends State<AddDayForm> {
                       ),
                       DurationPicker(
                         duration: _initialDuration,
-                        // duration: _initialDuration ?? parseDuration(businessHours.slotintervals.toString()),
                         onChange: (val) {
                           this.setState(() {
                             _initialDuration = val;
@@ -458,26 +340,11 @@ class _AddDayFormState extends State<AddDayForm> {
                             style: TextStyle(color: Colors.white),
                           ),
                           onPressed: () async {
-
-
-                              /*
-                              SnackBar(
-                                content: Text(
-                                  "Submitted Successfully!",
-                                ),
-                                backgroundColor: Colors.green,
-                                duration: Duration(seconds: 2),
-                                behavior: SnackBarBehavior.floating,
-                              );
-                               */
-
-
-                            //updateBusinessHoursInfoSunday
                             List<String> _currentSlots = calculateSlots();
 
-                            final BusinessHourDayCollection businessHours = BusinessHourDayCollection(dayOfWeek: _currentDay);
+                            final BusinessHourDayCollection businessHours = BusinessHourDayCollection(dayOfWeek: _currentDay!);
 
-                            dynamic result = await businessHours.updateBusinessHoursInfo(_currentStartTimeString, _currentEndTimeString, _currentIsHoliday, _currentSlotInterval, _currentSlots, _currentDay);
+                            dynamic result = await businessHours.updateBusinessHoursInfo(_currentStartTimeString, _currentEndTimeString, _currentIsHoliday, _currentSlotInterval, _currentSlots, _currentDay!);
                             if(result == null) {
                               setState(() {
                                 print('error');
@@ -493,11 +360,7 @@ class _AddDayFormState extends State<AddDayForm> {
                 ),
               ),
             );
-          } /*else {
-            return LoadingScreen();
           }
-          */
-
         }
 
 

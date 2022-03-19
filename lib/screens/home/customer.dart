@@ -401,8 +401,16 @@ class _CustomerState extends State<Customer> {
               body: Center(
                 child: Container(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      SizedBox(height: 100.0),
+                      Text(
+                        "Welcome ${userData?.name}!",
+                        style: TextStyle(
+                          fontSize: 35.0,
+                        ),
+                      ),
+                      SizedBox(height: 50.0),
                       Text(
                         "Date",
                         style: TextStyle(
@@ -429,7 +437,7 @@ class _CustomerState extends State<Customer> {
                           });
                         },
                       ),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 50.0),
                       Text(
                         "Time",
                         style: TextStyle(
@@ -440,7 +448,12 @@ class _CustomerState extends State<Customer> {
                         //value: userData?.aptTime ?? _currentSlot,
                           // hint: Text(userData?.aptTime ?? "Select Time"),
                           // hint: Text(userData?.aptTime ?? "Select Time"),
-                          hint: Text(selectTime),
+                          hint: Center(
+                            child: Text(
+                                selectTime,
+                                textAlign: TextAlign.center,
+                            ),
+                          ),
                           items: slots.map((slot) {
                             return DropdownMenuItem(
                               value: slot,
@@ -455,6 +468,37 @@ class _CustomerState extends State<Customer> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () async {
+                          if(_currentSlot == "Select Time") {
+                            SnackBar(
+                              content: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(Icons.error_outline, size: 32),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                      child: Text(
+                                        "Please select a valid time",
+                                        style: TextStyle(fontSize: 20),
+                                      ),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            );
+
+                            /*
+                            SnackBar(
+                              content: Text(
+                                "Please select a valid time",
+                              ),
+                              backgroundColor: Colors.red,
+                              duration: Duration(seconds: 2),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            */
+                          }
                           updateAppointmentCollection();
                       })
                       /*
