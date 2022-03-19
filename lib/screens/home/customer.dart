@@ -33,15 +33,17 @@ class _CustomerState extends State<Customer> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
 
+  static const selectTime = "Select Time";
+
   String buttonText1 = "Select Date";
-  String buttonText2 = "Select Time";
+  String buttonText2 = selectTime;
   bool isChanged = true;
 
   DateTime? date;
 
-  List<String> slots = [];
+  List<String> slots = [selectTime];
 
-  String _currentSlot = "";
+  String _currentSlot = selectTime;
 
   String _currentDay = "";
 
@@ -108,18 +110,21 @@ class _CustomerState extends State<Customer> {
 
         // 2. Getting the day of the selected date
 
-        DateTime convertStringDate = DateTime.parse(selectedDate);
+
+          DateTime convertStringDate = DateTime.parse(selectedDate);
+
 
         _currentDay = DateFormat('EEEE').format(convertStringDate);
 
         // 3. Read the BusinessHours collection for slot information regarding the day selected
 
-        List<AppointmentSlot> aptSlotArray = [];
+        // List<AppointmentSlot> aptSlotArray = [];
+          List<dynamic> aptSlotArray = [];
 
         allBusinessHours.forEach((eachDay) {
           if(eachDay.day == _currentDay) {
             eachDay.slots.forEach((slot) {
-              AppointmentSlot appointmentSlot = AppointmentSlot(email: "", slot: slot);
+              dynamic appointmentSlot = {'email': '', 'timeslot': slot};
               aptSlotArray.add(appointmentSlot);
             });
 
@@ -127,8 +132,8 @@ class _CustomerState extends State<Customer> {
         });
 
         // 4. Write the slots into the Appointments collection for the given date
-        // AppointmentsInfo newAppointmentInfo = AppointmentsInfo(appointmentslots: aptSlotArray, day: _currentDay, selectedDate: selectedDate);
-        // updateAppointmentsInFirestore(newAppointmentInfo);
+        AppointmentsInfo newAppointmentInfo = AppointmentsInfo(appointmentslots: aptSlotArray, day: _currentDay, selectedDate: selectedDate);
+        updateAppointmentsInFirestore(newAppointmentInfo);
 
     }
 
@@ -138,14 +143,22 @@ class _CustomerState extends State<Customer> {
       bool dateFound = false;
 
       List<String> availableSlotArray = [];
+      availableSlotArray.add(selectTime);
 
       allAppointments.forEach((eachDate) {
         if(eachDate.selectedDate == selectedDate) {
           dateFound = true;
-          eachDate.appointmentslots.forEach((AppointmentSlot slot) {
+          // eachDate.appointmentslots.forEach((AppointmentSlot slot) {
+          eachDate.appointmentslots.forEach((dynamic slot) {
+            if(slot['email'] == "") {
+              String? test = slot['timeslot'];
+              availableSlotArray.add(test!);
+            }
+            /*
             if(slot.email == "") {
               availableSlotArray.add(slot.slot);
             }
+             */
           });
         }
       });
@@ -249,14 +262,18 @@ class _CustomerState extends State<Customer> {
     // Allocates time slot to user's email
     Future<void> updateAppointmentCollection() async {
 
-      List<AppointmentSlot> updatedAppointmentSlotArray = [];
+      // List<Map<String,String>> updatedAppointmentSlotArray = [];
+
+      List<dynamic> updatedAppointmentSlotArray = [];
 
       allAppointments.forEach((eachDate) {
         if(eachDate.selectedDate == selectedDate) {
           // dateFound = true;
-          eachDate.appointmentslots.forEach((AppointmentSlot slot) {
-            if(slot.slot == _currentSlot) {
-              AppointmentSlot updatedAppointmentSlot = AppointmentSlot(email: user?.email ?? '', slot: slot.slot);
+          eachDate.appointmentslots.forEach((dynamic slot) {
+            if(slot['timeslot'] == _currentSlot) {
+              String? slotString = slot['timeslot'];
+              // Map<String,String> updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString!};
+              dynamic updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString!};
               // AppointmentSlot updatedAppointmentSlot = AppointmentSlot(email: "sujas", slot: "09:30");
               updatedAppointmentSlotArray.add(updatedAppointmentSlot);
             } else {
@@ -274,7 +291,29 @@ class _CustomerState extends State<Customer> {
       });
     }
 
+    String? readingAptInfo = "";
 
+    String? readUserAptInfo() {
+      if(userData?.aptDate == "") {
+        return readingAptInfo = "Select Date";
+      } else {
+        return readingAptInfo = userData?.aptDate;
+      }
+    }
+
+    String test = "";
+
+    bool boolIsDatePresent = false;
+
+    bool readUserInfo() {
+      if(userData?.aptDate == "") {
+        return boolIsDatePresent;
+      } else {
+        return boolIsDatePresent = true;
+      }
+    }
+
+    boolIsDatePresent = readUserInfo();
 
 
 
@@ -311,6 +350,15 @@ class _CustomerState extends State<Customer> {
     });
      */
 
+    bool isUserFound() {
+      if(userData?.aptDate == "") {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    bool checkUser = isUserFound();
 
 
 
@@ -363,7 +411,12 @@ class _CustomerState extends State<Customer> {
                       ),
                       ElevatedButton(
                         child: Text(
-                          selectedDate = userData?.aptDate ?? getText(),
+                          // checkUser = true ? userData?.aptDate : "Select Date",
+                          selectedDate = getText(),
+                          // selectedDate = userData?.aptDate ?? getText(),
+                          // userData?.aptDate ?? getText(),
+                          // userData?.aptDate == "" ? "Select Date" : userData?.aptDate,
+                          // selectedDate = userData?.aptDate != null ? "Select Date" : getText(),
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
@@ -372,6 +425,7 @@ class _CustomerState extends State<Customer> {
                           // slots = availableSlots();
                           setState(() {
                             isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
+                            // selectedDate = userData?.aptDate ?? getText();
                           });
                         },
                       ),
@@ -384,7 +438,9 @@ class _CustomerState extends State<Customer> {
                       ),
                       DropdownButtonFormField(
                         //value: userData?.aptTime ?? _currentSlot,
-                          hint: Text(userData?.aptTime ?? "Select Time"),
+                          // hint: Text(userData?.aptTime ?? "Select Time"),
+                          // hint: Text(userData?.aptTime ?? "Select Time"),
+                          hint: Text(selectTime),
                           items: slots.map((slot) {
                             return DropdownMenuItem(
                               value: slot,

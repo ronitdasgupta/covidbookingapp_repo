@@ -31,7 +31,7 @@ class Wrapper extends StatelessWidget {
     // return either Home or Authenticate widget
     if(user == null){
       return Authenticate();
-    } else if(user.uid == "HHOAwvimWNdGlmGnjD3i2VFuFA82"){
+    } else if(user.uid == "QsaU7IWGLlhb4wPJlbyRyP1FfMi1"){
       return Manager();
       // return ManagerPage();
     }

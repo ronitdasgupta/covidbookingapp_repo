@@ -30,8 +30,9 @@ class AppointmentsCollection {
   Future updateAppointment(AppointmentsInfo appointmentsInfo) async {
     try{
       return await appointments.doc(appointmentsInfo.selectedDate).set({
-        'appointmentslots' : appointmentsInfo.appointmentslots.asMap(),
-        'day' : "test",
+        'appointmentslots' : appointmentsInfo.appointmentslots,
+        // 'appointmentslots' : jsonDecode(source)
+        'day' : appointmentsInfo.day,
         'selecteddate' : appointmentsInfo.selectedDate,
       }, SetOptions(merge: true));
     } catch(e){
@@ -72,7 +73,9 @@ class AppointmentsCollection {
     List<AppointmentsInfo> arrayOfAptInfo = [];
     snapshot.docs.forEach((eachDate) {
       AppointmentsInfo eachAptInfo = AppointmentsInfo(
-        appointmentslots: AppointmentSlot.fromJsonArray(eachDate['appointmentslots']),
+        appointmentslots: eachDate['appointmentslots'],
+        // appointmentslots: AppointmentSlot.fromJsonArray(eachDate['appointmentslots']),
+        // appointmentslots: eachDate['appointmentslots'],
         day: eachDate['day'],
         selectedDate: eachDate['selecteddate'],
       );

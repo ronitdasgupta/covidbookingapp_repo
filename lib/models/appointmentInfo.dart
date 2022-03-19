@@ -12,6 +12,8 @@ class AppointmentSlot {
       slot: json['timeslot'],
     );
   }
+
+
   static List<AppointmentSlot> fromJsonArray(List<dynamic> jsonArray) {
     List<AppointmentSlot> arrayOfSlots = [];
 
@@ -21,6 +23,20 @@ class AppointmentSlot {
 
     return arrayOfSlots;
   }
+
+  /*
+  static List<Map<String, dynamic>> fromJsonArray(List<dynamic> jsonArray) {
+    List<Map<String, dynamic>> arrayOfSlots = [];
+
+    jsonArray.forEach((jsonData) {
+      arrayOfSlots.add(AppointmentSlot.fromJson(jsonData));
+    });
+
+    return arrayOfSlots;
+  }
+   */
+
+
 
   Map<String, dynamic> toJson() {
     return {
@@ -32,7 +48,9 @@ class AppointmentSlot {
 }
 
 class AppointmentsInfo {
-  final List<AppointmentSlot> appointmentslots;
+  // final List<AppointmentSlot> appointmentslots;
+  // final List<Map<String,String>> appointmentslots;
+  final List<dynamic> appointmentslots;
   final String day;
   final String selectedDate;
 
