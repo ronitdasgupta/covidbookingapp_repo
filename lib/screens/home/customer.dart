@@ -157,7 +157,12 @@ class _CustomerState extends State<Customer> {
 
       // 4. Write the slots into the Appointments collection for the given date
       AppointmentsInfo newAppointmentInfo = AppointmentsInfo(appointmentslots: aptSlotArray, day: _currentDay, selectedDate: _currentDate);
-      updateAppointmentsInFirestore(newAppointmentInfo);
+      if(_submitCancelButtonText != "Cancel Appointment") {
+        updateAppointmentsInFirestore(newAppointmentInfo);
+        setState(() {
+          _submitCancelButtonText = "Submit";
+        });
+      }
 
     }
 
@@ -265,34 +270,60 @@ class _CustomerState extends State<Customer> {
 
     }
 
-    Future<void> updateUser() async {
-      UsersCollection usersCollection = UsersCollection(uid: user?.uid ?? '');
-      usersCollection.updateUserAppointment(
-        userData?.name ?? '',
-        userData?.phoneNumber ?? '',
-        userData?.email ?? '',
-        _currentDate,
-        _currentTime ?? '',
-        _currentDay,
-      );
+    Future<void> updateUser(isCancelled) async {
+      // Updates user information once appointment gets scheduled
+      if(isCancelled == false) {
+        UsersCollection usersCollection = UsersCollection(uid: user?.uid ?? '');
+        usersCollection.updateUserAppointment(
+          userData?.name ?? '',
+          userData?.phoneNumber ?? '',
+          userData?.email ?? '',
+          _currentDate,
+          _currentTime ?? '',
+          _currentDay,
+        );
+      } else {
+        // Updating user info when user cancels appointment
+        UsersCollection usersCollection = UsersCollection(uid: user?.uid ?? '');
+        usersCollection.updateUserAppointment(
+          userData?.name ?? '',
+          userData?.phoneNumber ?? '',
+          userData?.email ?? '',
+          '',
+          '',
+          '',
+        );
+      }
     }
 
     // Updates Appointments Collection once user selects a date and time slot
     // Allocates time slot to user's email
-    Future<void> updateAppointmentCollection() async {
+    Future<void> updateAppointmentCollection(bool isCancelled) async {
 
       List<dynamic> updatedAppointmentSlotArray = [];
 
       allAppointments.forEach((eachDate) {
         if(eachDate.selectedDate == _currentDate) {
           eachDate.appointmentslots.forEach((dynamic slot) {
-            if(slot['timeslot'] == _currentTime) {
-              String? slotString = slot['timeslot'];
-              dynamic updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString ?? ''};
-              updatedAppointmentSlotArray.add(updatedAppointmentSlot);
+            if(isCancelled == false) {
+              if(slot['timeslot'] == _currentTime) {
+                String? slotString = slot['timeslot'];
+                dynamic updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString ?? ''};
+                updatedAppointmentSlotArray.add(updatedAppointmentSlot);
+              } else {
+                // Keeping the slot as is
+                updatedAppointmentSlotArray.add(slot);
+              }
             } else {
-              // Keeping the slot as is
-              updatedAppointmentSlotArray.add(slot);
+              // Cancel scenario - clearing up the email and timeslot in Appointments collection
+              if(slot['email'] == user?.email) {
+                String? slotString = slot['timeslot'];
+                dynamic updatedAppointmentSlot = {'email': '', 'timeslot': slotString};
+                updatedAppointmentSlotArray.add(updatedAppointmentSlot);
+              } else {
+                // Keeping the slot as is
+                updatedAppointmentSlotArray.add(slot);
+              }
             }
           });
           AppointmentsInfo updatedAppointmentInfo = AppointmentsInfo(appointmentslots: updatedAppointmentSlotArray, day: eachDate.day, selectedDate: _currentDate);
@@ -300,10 +331,51 @@ class _CustomerState extends State<Customer> {
 
           // Updates Users collection for specific user based on uid
           // Writes the user's date and time slot
-          updateUser();
+          updateUser(isCancelled);
         }
       });
     }
+
+    Future<void> deleteAppointmentCollectionDocument(String _currentDate) async {
+      final AppointmentsCollection appointmentsCollection = AppointmentsCollection();
+
+      dynamic result = await appointmentsCollection.deleteAppointment(_currentDate);
+
+      if(result == null) {
+        setState(() {
+          print('error');
+        });
+      }
+    }
+
+    Future<void> deleteFromAppointmentCollection() async {
+      bool scheduledAppointmentFound = false;
+      // List<dynamic>
+      // Checks to see if there are scheduled appointments for that day
+      // If there are no scheduled appointments : Delete the document
+      allAppointments.forEach((eachDate) {
+        if(eachDate.selectedDate == _currentDate) {
+          eachDate.appointmentslots.forEach((dynamic slot) {
+            if(slot['email'] != "" && slot['email'] != userData?.email) {
+              scheduledAppointmentFound = true;
+            }
+          });
+        }
+      });
+
+      if(scheduledAppointmentFound == true) {
+        // Update the document
+        updateAppointmentCollection(true);
+
+      } else {
+        // Delete the document
+        deleteAppointmentCollectionDocument(_currentDate);
+        updateUser(true);
+      }
+      // Else, update the email to an empty string
+
+    }
+
 
     bool boolIsDatePresent = false;
 
@@ -428,9 +500,10 @@ class _CustomerState extends State<Customer> {
                       );
                     }
                     if(_submitCancelButtonText == "Submit") {
-                      updateAppointmentCollection();
+                      updateAppointmentCollection(false);
                     } else{
                       // Cancel appointment method
+                      deleteFromAppointmentCollection();
                     }
                   })
             ],

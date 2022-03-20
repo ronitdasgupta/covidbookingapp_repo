@@ -41,6 +41,14 @@ class AppointmentsCollection {
 
   }
 
+  Future deleteAppointment(String appointmentDate) async {
+    try {
+      return await appointments.doc(appointmentDate).delete();
+    } catch(e) {
+      print(e.toString());
+    }
+  }
+
 
 
   /*
