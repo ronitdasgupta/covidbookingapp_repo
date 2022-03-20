@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:covidbookingapp_repo/models/days.dart';
 import 'package:covidbookingapp_repo/screens/home/days_list.dart';
 import 'package:covidbookingapp_repo/screens/home/days_widget.dart';
 import 'package:covidbookingapp_repo/screens/wrapper.dart';
@@ -32,14 +31,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    /*
-    return ChangeNotifierProvider(
-      create: (context) =>
-    );
-     */
-
-
     return MultiProvider(
       providers: [
         StreamProvider<MyUser?>.value(
@@ -59,28 +50,5 @@ class MyApp extends StatelessWidget {
         home: Wrapper(),
       ),
     );
-
-    // WORKING PART
-
-    /*
-    return StreamProvider<MyUser?>.value(
-      value: AuthService().user,
-      initialData: null,
-      child: MaterialApp(
-        home: Wrapper(),
-      ),
-    );
-     */
-
-
-    /*
-    return StreamProvider<MyUser>.value(
-      initialData: null,
-      value: AuthService().user,
-      child: MaterialApp(
-        home: Wrapper(),
-      ),
-    );
-     */
   }
 }

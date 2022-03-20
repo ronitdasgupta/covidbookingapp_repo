@@ -21,9 +21,7 @@ class CustomerWrapper extends StatelessWidget {
 
     if(user == null) {
       return Authenticate();
-      // return Wrapper();
     }
-
 
     return StreamProvider<UserData?>.value(
       value: UsersCollection(uid: user.uid ?? '').userData,

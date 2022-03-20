@@ -58,7 +58,6 @@ class _RegisterState extends State<Register> {
         child: Form(
           key: _formKey,
           child: Column(
-            //mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget> [
               sizedBoxHeight,
               TextFormField(
@@ -69,28 +68,11 @@ class _RegisterState extends State<Register> {
                     }
                     return null;
                   },
-                  //validator: (val) => val.isEmpty ? 'Enter an email' : null,
                   onChanged: (val) {
                     setState(() => name = val);
                   }
               ),
               sizedBoxHeight,
-              /*
-              TextFormField(
-                  decoration: textInputDecoration.copyWith(hintText: 'Phone Number'),
-                  validator: (String? value){
-                    if(value != null && value.length != 10){
-                      return 'Enter a valid phone number';
-                    }
-                    return null;
-                  },
-                  //validator: (val) => val.isEmpty ? 'Enter an email' : null,
-                  onChanged: (val) {
-                    setState(() => phoneNumber = val);
-                  }
-              ),
-               */
-              //sizedBoxHeight,
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'Email', prefixIcon: Icon(Icons.email)),
                 validator: (String? value){
@@ -99,7 +81,6 @@ class _RegisterState extends State<Register> {
                   }
                   return null;
                 },
-                //validator: (val) => val.isEmpty ? 'Enter an email' : null,
                   onChanged: (val) {
                     setState(() => email = val);
                   }
@@ -114,7 +95,6 @@ class _RegisterState extends State<Register> {
                     }
                     return null;
                   },
-                  //validator: (val) => val.length < 6 ? 'Enter a password with more than 6 characters' : null,
                   onChanged: (val) {
                     setState(() => password = val);
                   }
@@ -130,7 +110,6 @@ class _RegisterState extends State<Register> {
                       setState(() => loading = true);
                       // Validating through Firebase
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password, name, phoneNumber).then((_){
-                        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyScreen()));
                       });
                       if(result == null) {
                         setState(() {
@@ -141,7 +120,6 @@ class _RegisterState extends State<Register> {
                     }
                   }
               ),
-              //sizedBoxHeight,
               Text(
                 error,
                 style: TextStyle(color: Colors. red, fontSize: 14.0),

@@ -11,7 +11,6 @@ import '../../services/auth.dart';
 import 'package:covidbookingapp_repo/services/usersCollection.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:covidbookingapp_repo/screens/home/user_list.dart';
 import 'package:covidbookingapp_repo/services/appointmentsCollection.dart';
 
 import '../../services/businessHoursCollection.dart';
@@ -65,7 +64,6 @@ class _CustomerState extends State<Customer> {
       bool dateFound = false;
 
       List<String> availableSlotArray = [];
-      // availableSlotArray.add(selectTime);
 
       allAppointments.forEach((eachDate) {
         if(eachDate.selectedDate == _currentDate) {
@@ -99,7 +97,6 @@ class _CustomerState extends State<Customer> {
           _currentDate = DateFormat('yyyy-MM-dd').format(now);
         } else {
           _currentDate = userData!.aptDate;
-          // _currentTime = userData!.aptTime;
         }
       }
       return _currentDate;
@@ -133,9 +130,7 @@ class _CustomerState extends State<Customer> {
 
       // 2. Getting the day of the selected date
 
-
       DateTime convertStringDate = DateTime.parse(_currentDate);
-
 
       _currentDay = DateFormat('EEEE').format(convertStringDate);
 
@@ -172,7 +167,6 @@ class _CustomerState extends State<Customer> {
       } else {
         writeNewDate();
       }
-      // slots = getSlotAvailability();
       setState(() {
         slots = readAvailableSlots();
       });
@@ -182,7 +176,6 @@ class _CustomerState extends State<Customer> {
 
     String? getCurrentTime() {
       slots = getSlotAvailability();
-      // _currentTime = (userData?.aptDate == null || userData?.aptDate == '' ? slots[0] : userData?.aptTime)!;
       if(_currentTime == null || _currentTime == '') {
         if(userData?.aptTime == null || userData?.aptTime == '') {
           if(slots.length > 0) {
@@ -191,50 +184,12 @@ class _CustomerState extends State<Customer> {
             _currentTime = "";
           }
         } else {
-          // _currentDate = userData!.aptDate;
           _currentTime = userData!.aptTime;
         }
       }
       return _currentTime;
     }
-    // String _submitCancelButtonText;
 
-
-    /*    _currentDate = getCurrentDate();
-    slots = getSlotAvailability();
-    _currentTime = getCurrentTime();*/
-
-    // _currentDate = userData?.aptDate == null || userData?.aptDate == '' ? DateFormat('yyyy-MM-dd').format(now) : userData?.aptDate;
-    // _currentDate = _currentDate ?? userData?.aptDate;
-
-
-
-
-
-
-
-    //String _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
-    //_currentDate = (userData?.aptDate == null || userData?.aptDate == '' ? DateFormat('yyyy-MM-dd').format(now) : userData?.aptDate)!;
-    // _currentTime = (userData?.aptDate == null || userData?.aptDate == '' ? slots[0] : userData?.aptTime)!;
-
-
-    /*
-    if(userData?.aptTime == null || userData?.aptTime == "") {
-      if(slots.length > 0) {
-        _currentTime = slots[0];
-      }
-    } else {
-      _currentTime = userData?.aptTime;
-    }
-     */
-
-    /*
-    if(slots.length > 0 && userData?.aptTime == null) {
-      _currentTime = userData?.aptTime ?? slots[0];
-    } /* else {
-      _currentTime = "00:00";
-    } */
-     */
 
     Future pickDate (BuildContext context) async {
       final initialDate = DateTime.now();
@@ -250,23 +205,10 @@ class _CustomerState extends State<Customer> {
       }
 
       setState((){
-        // _currentDate = getCurrentDate();
         _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
         slots = getSlotAvailability();
         _currentTime = getCurrentTime();
-        // _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
       });
-
-      // setState(() => date = newDate);
-      // setState(() => _currentDate = DateFormat('yyyy-MM-dd').format(newDate));
-      // _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
-
-      /*
-      setState(() {
-        _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
-        slots = getSlotAvailability();
-      });
-       */
 
     }
 
@@ -350,7 +292,6 @@ class _CustomerState extends State<Customer> {
 
     Future<void> deleteFromAppointmentCollection() async {
       bool scheduledAppointmentFound = false;
-      // List<dynamic>
       // Checks to see if there are scheduled appointments for that day
       // If there are no scheduled appointments : Delete the document
       allAppointments.forEach((eachDate) {
@@ -393,17 +334,6 @@ class _CustomerState extends State<Customer> {
     slots = getSlotAvailability();
     _currentTime = getCurrentTime();
     _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
-
-    /*
-    setState((){
-      _currentDate = getCurrentDate();
-      slots = getSlotAvailability();
-      _currentTime = getCurrentTime();
-      _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
-    });
-     */
-
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -450,7 +380,6 @@ class _CustomerState extends State<Customer> {
                   pickDate(context);
                   // checkSlotAvailability();
                   setState(() {
-                    // isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
                     isChanged == true ? buttonText1 = getCurrentDate(): getCurrentDate();
                     _currentDate = getCurrentDate();
                   });

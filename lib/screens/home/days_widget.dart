@@ -9,23 +9,12 @@ import '../../services/businessHoursCollection.dart';
 class DaysWidget extends StatelessWidget {
   // const DaysWidget({Key? key}) : super(key: key);
 
-  // final String day;
-
-  // DaysWidget({ required this.day});
-
   final BusinessHours businessHours;
 
   DaysWidget({ required this.businessHours });
 
   @override
   Widget build(BuildContext context) {
-    /*
-    return StreamProvider<List<BusinessHours>>.value(
-      //value: BusinessHoursCollection().businessInfo,
-      value: BusinessHoursCollection().businessInfo,
-      initialData: [],
-     */
-      // initialData: [BusinessHours(day: "Monday", start: start, end: end, isholiday: isholiday, slotintervals: slotintervals, slots: slots)],
       return Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Card(

@@ -5,8 +5,6 @@ import 'package:covidbookingapp_repo/screens/home/customer.dart';
 import 'package:covidbookingapp_repo/screens/home/customer_wrapper.dart';
 import 'package:covidbookingapp_repo/screens/home/days_list.dart';
 import 'package:covidbookingapp_repo/screens/home/manager.dart';
-import 'package:covidbookingapp_repo/screens/home/manager_page.dart';
-import 'package:covidbookingapp_repo/screens/home/user_list.dart';
 // import 'package:covidbookingapp_repo/screens/home/manager_homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,16 +23,11 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<MyUser?>(context);
     print(user);
 
-
-
-
-  // dynamic result = await _auth.signInAnon();
     // return either Home or Authenticate widget
     if(user == null){
       return Authenticate();
     } else if(user.uid == "QsaU7IWGLlhb4wPJlbyRyP1FfMi1"){
       return Manager();
-      // return ManagerPage();
     }
      else{
       // return Customer();
@@ -43,8 +36,6 @@ class Wrapper extends StatelessWidget {
       } else {
         return VerifyScreen();
       }
-      return CustomerWrapper();
-      // return VerifyScreen();
     }
   }
 }

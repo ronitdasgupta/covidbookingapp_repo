@@ -6,8 +6,6 @@ import '../models/users.dart';
 class UsersCollection{
 
   final String uid;
-  //final String day;
-  //final String date;
   UsersCollection({ required this.uid });
 
 
@@ -66,9 +64,6 @@ class UsersCollection{
     );
   }
 
-  // appointment times from snapshot
-
-
   // get stream
   Stream<List<Users>> get userInfo {
     return users.snapshots().map(_userListFromSnapshot);
@@ -78,7 +73,5 @@ class UsersCollection{
   Stream<UserData> get userData{
     return users.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
-
-  // get appointments doc stream
 
 }

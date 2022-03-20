@@ -29,7 +29,6 @@ class _PickAppointmentTimeState extends State<PickAppointmentTime> {
             ),
             onPressed: () {
               isChanged =! isChanged;
-              // PUT SOMETHING HERE
               setState(() {
                 isChanged == true ? buttonText2 = "Select Time" : buttonText2 = "4:00";
               });

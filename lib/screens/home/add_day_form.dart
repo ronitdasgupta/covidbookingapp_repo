@@ -16,9 +16,6 @@ import '../../services/auth.dart';
 class AddDayForm extends StatefulWidget {
 
   final AuthService auth = AuthService();
-  // final BusinessHours businessHours;
-
-  // AddDayForm({ required this.businessHours });
 
   @override
   _AddDayFormState createState() => _AddDayFormState();
@@ -26,7 +23,6 @@ class AddDayForm extends StatefulWidget {
 
 class _AddDayFormState extends State<AddDayForm> {
   //const ManagerPage({Key? key}) : super(key: key);
-  //TimeOfDay? time;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -38,7 +34,7 @@ class _AddDayFormState extends State<AddDayForm> {
 
   String? _currentDay;
 
-  bool _currentIsHoliday = true;
+  bool _currentIsHoliday = false;
 
 
 
@@ -84,15 +80,8 @@ class _AddDayFormState extends State<AddDayForm> {
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
   }
 
-
-
-
-
   List<String> calculateSlots() {
     // 1. Calculate total hours the business is running
-
-    //List<String> slotString = [];
-    //slotString.add("9:00");
 
     // Converting String from buttons into TimeOfDay type
     TimeOfDay _startTime = TimeOfDay(hour:int.parse(getStartTimeText().split(":")[0]),minute: int.parse(getStartTimeText().split(":")[1]));
@@ -110,10 +99,8 @@ class _AddDayFormState extends State<AddDayForm> {
     int minutesOpen = endTimeDateTime.difference(startTimeDateTime).inMinutes;
 
     // Converts the minutes into hours:minutes
-    // String hoursOpen = durationToString(minutesOpen);
 
     // 2. Divide the total hours open by the slot length and add 1 to get the number of slots available
-    //Duration test = _initialDuration / _initialDuration;
 
     DateTime addDateTime = startTimeDateTime;
     List<String> slotString = [];
@@ -214,7 +201,6 @@ class _AddDayFormState extends State<AddDayForm> {
               weekDays[i][1]= "FoundInDB";
             }
           });
-          //print(weekDays[i][k]);
         }
       }
       for (var i=0; i<weekDays.length; i++)
@@ -224,32 +210,13 @@ class _AddDayFormState extends State<AddDayForm> {
             //Only adds the days that are not in the DB
             selectableDays.add(weekDays[i][0]);
           }
-          //print(weekDays[i][k]);
       }
       return selectableDays;
     }
 
-
-
     List<String> selectableDays = [];
 
     selectableDays = pickSelectableDays(selectableDays);
-
-    /*
-    List<String> selectableDays = [];
-
-    days.forEach((day) {
-      bool isFound = false;
-      allBusinessHours.forEach((dayIsAvailable) {
-        if(day == dayIsAvailable.day) {
-          isFound = true;
-        }
-      });
-      if(isFound == false) {
-        selectableDays.add(day);
-      }
-    });
-     */
 
             return Scaffold(
               appBar: AppBar(
@@ -277,7 +244,6 @@ class _AddDayFormState extends State<AddDayForm> {
                       SizedBox(height: 20.0),
                       DropdownButtonFormField(
                         value: _currentDay ?? selectableDays[0],
-                        // hint: Text("Select a Day"),
                         items: selectableDays.map((day) {
                           return DropdownMenuItem(
                             value: day,
