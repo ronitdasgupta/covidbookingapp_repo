@@ -117,6 +117,7 @@ class _AddDayFormState extends State<AddDayForm> {
 
     DateTime addDateTime = startTimeDateTime;
     List<String> slotString = [];
+    slotString.add("");
 
     int numberOfSlots = (minutesOpen ~/ _initialDuration.inMinutes);
     for(int i = 0; i <= numberOfSlots; i++) {

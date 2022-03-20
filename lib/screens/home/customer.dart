@@ -33,48 +33,87 @@ class _CustomerState extends State<Customer> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
 
-  static const selectTime = "Select Time";
-
   String buttonText1 = "Select Date";
-  String buttonText2 = selectTime;
   bool isChanged = true;
 
   DateTime? date;
 
-  List<String> slots = [selectTime];
-
-  String _currentSlot = selectTime;
+  List<String> slots = [];
 
   String _currentDay = "";
 
-
-
-
-
-
-  //final Stream<QuerySnapshot> BusinessHours = FirebaseFirestore.instance.collection('BusinessHours').snapshots();
-  //final Stream<QuerySnapshot> Appointments = FirebaseFirestore.instance.collection('Appointments').snapshots();
-
-  //Stream<List<Appointments>> readAppointments() => FirebaseFirestore.instance.collection("Appoingments").snapshots().map((snapshot) => snapshot.docs.map((doc) => AppointmentsInfo..data()).toList());
-
-  //const Customer({Key? key}) : super(key: key);
+  String _currentDate = '';
+  String? _currentTime;
+  DateTime now = new DateTime.now();
+  String? _submitCancelButtonText;
 
 
   @override
   Widget build(BuildContext context) {
 
-    String selectedDate = "";
+    final user = Provider.of<MyUser?>(context);
+    final allBusinessHours = Provider.of<List<BusinessHours>>(context);
+    final allAppointments = Provider.of<List<AppointmentsInfo>>(context);
+    final userData = Provider.of<UserData?>(context);
 
 
 
+    // Gets slots for selected date
+    List<String> readAvailableSlots() {
+      // 1. Check to see if selected date is in Appointments collection
 
-    void _showAppointmentInfo(){
-      showModalBottomSheet(context: context, builder: (context){
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-          child: Text('bottom sheet'),
-        );
+      bool dateFound = false;
+
+      List<String> availableSlotArray = [];
+      // availableSlotArray.add(selectTime);
+
+      allAppointments.forEach((eachDate) {
+        if(eachDate.selectedDate == _currentDate) {
+          dateFound = true;
+          eachDate.appointmentslots.forEach((dynamic slot) {
+            if(slot['email'] == "" || slot['email'] == userData?.email) {
+              String? test = slot['timeslot'];
+              availableSlotArray.add(test ?? '');
+            }
+          });
+        }
       });
+
+      if(dateFound == true) {
+        return availableSlotArray;
+      }
+
+      if(dateFound == false) {
+        return availableSlotArray;
+      }
+
+      return availableSlotArray;
+    }
+
+
+
+
+    String getCurrentDate() {
+      if(_currentDate == null || _currentDate == '') {
+        if(userData?.aptDate == null || userData?.aptDate == '') {
+          _currentDate = DateFormat('yyyy-MM-dd').format(now);
+        } else {
+          _currentDate = userData!.aptDate;
+          // _currentTime = userData!.aptTime;
+        }
+      }
+      return _currentDate;
+    }
+
+    // Checking if date is already in collection
+    bool isDateFound() {
+      bool dateFound = false;
+      allAppointments.forEach((eachDate) {
+        if(eachDate.selectedDate == _currentDate) {
+          dateFound = true;
+        }
+      });
+      return dateFound;
     }
 
     Future<void> updateAppointmentsInFirestore(AppointmentsInfo appointmentsInfo) async {
@@ -89,122 +128,108 @@ class _CustomerState extends State<Customer> {
       }
     }
 
-
-
-    final user = Provider.of<MyUser?>(context);
-    print(user);
-
-    final allBusinessHours = Provider.of<List<BusinessHours>>(context);
-    print(allBusinessHours);
-
-    final allAppointments = Provider.of<List<AppointmentsInfo>>(context);
-    print(allAppointments);
-
-    final userData = Provider.of<UserData?>(context);
-
-    // selectedDate = userData?.aptDate ?? '';
-    // _currentSlot = userData?.aptTime ?? '';
-
     Future<void> writeNewDate() async {
       // 1. Case if the date is not found in the Appointments collection
 
-        // 2. Getting the day of the selected date
+      // 2. Getting the day of the selected date
 
 
-          DateTime convertStringDate = DateTime.parse(selectedDate);
+      DateTime convertStringDate = DateTime.parse(_currentDate);
 
 
-        _currentDay = DateFormat('EEEE').format(convertStringDate);
+      _currentDay = DateFormat('EEEE').format(convertStringDate);
 
-        // 3. Read the BusinessHours collection for slot information regarding the day selected
+      // 3. Read the BusinessHours collection for slot information regarding the day selected
 
-        // List<AppointmentSlot> aptSlotArray = [];
-          List<dynamic> aptSlotArray = [];
+      List<dynamic> aptSlotArray = [];
 
-        allBusinessHours.forEach((eachDay) {
-          if(eachDay.day == _currentDay) {
-            eachDay.slots.forEach((slot) {
+      allBusinessHours.forEach((eachDay) {
+        if(eachDay.day == _currentDay) {
+          eachDay.slots.forEach((slot) {
+            if(slot != "") {
               dynamic appointmentSlot = {'email': '', 'timeslot': slot};
               aptSlotArray.add(appointmentSlot);
-            });
-
-          }
-        });
-
-        // 4. Write the slots into the Appointments collection for the given date
-        AppointmentsInfo newAppointmentInfo = AppointmentsInfo(appointmentslots: aptSlotArray, day: _currentDay, selectedDate: selectedDate);
-        updateAppointmentsInFirestore(newAppointmentInfo);
-
-    }
-
-    List<String> availableSlots() {
-      // 1. Check to see if selected date is in Appointments collection
-
-      bool dateFound = false;
-
-      List<String> availableSlotArray = [];
-      availableSlotArray.add(selectTime);
-
-      allAppointments.forEach((eachDate) {
-        if(eachDate.selectedDate == selectedDate) {
-          dateFound = true;
-          // eachDate.appointmentslots.forEach((AppointmentSlot slot) {
-          eachDate.appointmentslots.forEach((dynamic slot) {
-            if(slot['email'] == "") {
-              String? test = slot['timeslot'];
-              availableSlotArray.add(test!);
             }
-            /*
-            if(slot.email == "") {
-              availableSlotArray.add(slot.slot);
-            }
-             */
           });
+
         }
       });
 
-      if(dateFound == true) {
-        return availableSlotArray;
-      }
-
-      if(dateFound == false) {
-        return availableSlotArray;
-      }
-
-      return availableSlotArray;
+      // 4. Write the slots into the Appointments collection for the given date
+      AppointmentsInfo newAppointmentInfo = AppointmentsInfo(appointmentslots: aptSlotArray, day: _currentDay, selectedDate: _currentDate);
+      updateAppointmentsInFirestore(newAppointmentInfo);
 
     }
 
+    List<String> getSlotAvailability() {
+      if(isDateFound() == true) {
 
-
-    // Checking if date is already in collection
-    bool isDateFound() {
-      bool dateFound = false;
-      allAppointments.forEach((eachDate) {
-        if(eachDate.selectedDate == selectedDate) {
-          dateFound = true;
-        }
-      });
-      return dateFound;
-    }
-
-    String getText() {
-      if(date == null) {
-        return "Select Date";
       } else {
-        // selectedDate = "${date?.month}-${date?.day}-${date?.year}";
-        selectedDate = DateFormat('yyyy-MM-dd').format(date!);
-        //
-        // Checking to see if date selected is available in Appointments collection
-        if(isDateFound() == true) {
-
-        } else {
-          writeNewDate();
-        }
-        slots = availableSlots();
-        return selectedDate;
+        writeNewDate();
       }
+      // slots = getSlotAvailability();
+      setState(() {
+        slots = readAvailableSlots();
+      });
+      return slots;
     }
+
+
+    String? getCurrentTime() {
+      slots = getSlotAvailability();
+      // _currentTime = (userData?.aptDate == null || userData?.aptDate == '' ? slots[0] : userData?.aptTime)!;
+      if(_currentTime == null || _currentTime == '') {
+        if(userData?.aptTime == null || userData?.aptTime == '') {
+          if(slots.length > 0) {
+            _currentTime = slots[0];
+          } else {
+            _currentTime = "";
+          }
+        } else {
+          // _currentDate = userData!.aptDate;
+          _currentTime = userData!.aptTime;
+        }
+      }
+      return _currentTime;
+    }
+    // String _submitCancelButtonText;
+
+
+    /*    _currentDate = getCurrentDate();
+    slots = getSlotAvailability();
+    _currentTime = getCurrentTime();*/
+
+    // _currentDate = userData?.aptDate == null || userData?.aptDate == '' ? DateFormat('yyyy-MM-dd').format(now) : userData?.aptDate;
+    // _currentDate = _currentDate ?? userData?.aptDate;
+
+
+
+
+
+
+
+    //String _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
+    //_currentDate = (userData?.aptDate == null || userData?.aptDate == '' ? DateFormat('yyyy-MM-dd').format(now) : userData?.aptDate)!;
+    // _currentTime = (userData?.aptDate == null || userData?.aptDate == '' ? slots[0] : userData?.aptTime)!;
+
+
+    /*
+    if(userData?.aptTime == null || userData?.aptTime == "") {
+      if(slots.length > 0) {
+        _currentTime = slots[0];
+      }
+    } else {
+      _currentTime = userData?.aptTime;
+    }
+     */
+
+    /*
+    if(slots.length > 0 && userData?.aptTime == null) {
+      _currentTime = userData?.aptTime ?? slots[0];
+    } /* else {
+      _currentTime = "00:00";
+    } */
+     */
 
     Future pickDate (BuildContext context) async {
       final initialDate = DateTime.now();
@@ -219,69 +244,58 @@ class _CustomerState extends State<Customer> {
         return;
       }
 
-      setState(() => date = newDate);
+      setState((){
+        // _currentDate = getCurrentDate();
+        _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
+        slots = getSlotAvailability();
+        _currentTime = getCurrentTime();
+        // _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
+      });
 
-      // Checking to see if date selected is available in Appointments collection
+      // setState(() => date = newDate);
+      // setState(() => _currentDate = DateFormat('yyyy-MM-dd').format(newDate));
+      // _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
+
       /*
-      if(isDateFound() == true) {
-
-      } else {
-        writeNewDate();
-      }
-
-
       setState(() {
-        slots = availableSlots();
+        _currentDate = DateFormat('yyyy-MM-dd').format(newDate);
+        slots = getSlotAvailability();
       });
        */
 
     }
 
-    // DateTime convertStringDate = DateTime.parse(selectedDate);
-
-     // String day = DateFormat('EEEE').format(convertStringDate);
-
     Future<void> updateUser() async {
       UsersCollection usersCollection = UsersCollection(uid: user?.uid ?? '');
       usersCollection.updateUserAppointment(
-          userData?.name ?? '',
-          userData?.phoneNumber ?? '',
-          userData?.email ?? '',
-          selectedDate,
-          _currentSlot,
-          _currentDay,
+        userData?.name ?? '',
+        userData?.phoneNumber ?? '',
+        userData?.email ?? '',
+        _currentDate,
+        _currentTime ?? '',
+        _currentDay,
       );
     }
-
-
-
-
-
 
     // Updates Appointments Collection once user selects a date and time slot
     // Allocates time slot to user's email
     Future<void> updateAppointmentCollection() async {
 
-      // List<Map<String,String>> updatedAppointmentSlotArray = [];
-
       List<dynamic> updatedAppointmentSlotArray = [];
 
       allAppointments.forEach((eachDate) {
-        if(eachDate.selectedDate == selectedDate) {
-          // dateFound = true;
+        if(eachDate.selectedDate == _currentDate) {
           eachDate.appointmentslots.forEach((dynamic slot) {
-            if(slot['timeslot'] == _currentSlot) {
+            if(slot['timeslot'] == _currentTime) {
               String? slotString = slot['timeslot'];
-              // Map<String,String> updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString!};
-              dynamic updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString!};
-              // AppointmentSlot updatedAppointmentSlot = AppointmentSlot(email: "sujas", slot: "09:30");
+              dynamic updatedAppointmentSlot = {'email': user?.email ?? '', 'timeslot': slotString ?? ''};
               updatedAppointmentSlotArray.add(updatedAppointmentSlot);
             } else {
               // Keeping the slot as is
               updatedAppointmentSlotArray.add(slot);
             }
           });
-          AppointmentsInfo updatedAppointmentInfo = AppointmentsInfo(appointmentslots: updatedAppointmentSlotArray, day: eachDate.day, selectedDate: selectedDate);
+          AppointmentsInfo updatedAppointmentInfo = AppointmentsInfo(appointmentslots: updatedAppointmentSlotArray, day: eachDate.day, selectedDate: _currentDate);
           updateAppointmentsInFirestore(updatedAppointmentInfo);
 
           // Updates Users collection for specific user based on uid
@@ -290,18 +304,6 @@ class _CustomerState extends State<Customer> {
         }
       });
     }
-
-    String? readingAptInfo = "";
-
-    String? readUserAptInfo() {
-      if(userData?.aptDate == "") {
-        return readingAptInfo = "Select Date";
-      } else {
-        return readingAptInfo = userData?.aptDate;
-      }
-    }
-
-    String test = "";
 
     bool boolIsDatePresent = false;
 
@@ -315,279 +317,126 @@ class _CustomerState extends State<Customer> {
 
     boolIsDatePresent = readUserInfo();
 
-
-
-
-
-
+    _currentDate = getCurrentDate();
+    slots = getSlotAvailability();
+    _currentTime = getCurrentTime();
+    _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
 
     /*
-    allBusinessHours.forEach((dayIsAvailable) {
-      if(allBusinessHours.contains(dayIsAvailable.day == true)) {
-        //_availableDays.add(dayIsAvailable.day);
-        days.remove(dayIsAvailable.day);
-      }
+    setState((){
+      _currentDate = getCurrentDate();
+      slots = getSlotAvailability();
+      _currentTime = getCurrentTime();
+      _submitCancelButtonText = userData?.aptDate == null || userData?.aptDate == '' ? "Submit" : "Cancel Appointment";
     });
      */
 
-    /*
-    allAppointments.forEach((appointment) {
-      if(appointment.date == getText()) {
-        // document.get().then((DocumentSnapshot) => null)
-        // FirebaseFirestore.instance.collection('Appointments').doc(getText()).get().then((DocumentSnapshot) => )
-
-        // Reading all the information for the specific date
-        document.get().then((function) => "appointmentslots");
-        document.get().then((function) => "day");
-
-        // Loop through the map with timeslot that doesn't have an email
-        appointmentslots.forEach(slot) {
-          appointmentslots.forEach((k, v)) {
-            if(v = "")
-          }
-        }
-      }
-    });
-     */
-
-    bool isUserFound() {
-      if(userData?.aptDate == "") {
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    bool checkUser = isUserFound();
 
 
-
-
-
-
-
-
-
-
-
-    /*
-    final users = Provider.of<List<Users>?>(context);
-    print(users);
-     */
-
-    // final slots = Provider.of<QuerySnapshot>(context);
-    // print(slots);
-
-      //return StreamProvider<List<AppointmentsInfo>?>.value(
-        //value: AppointmentsCollection(dateString: '').apt,
-        //initialData: null,
-        //initialData: null,
-              return Scaffold(
-                backgroundColor: Colors.white,
-                appBar: AppBar(
-                    title: Text('Select Appointment'),
-                    backgroundColor: Colors.black,
-                    actions: <Widget>[
-                      TextButton.icon(
-                        icon: Icon(Icons.person),
-                        label: Text('Logout'),
-                        onPressed: () async {
-                          await _auth.signOut();
-                        },
-                      )
-                    ]
-                ),
-                //body: AppointmentsList(),
-              body: Center(
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 100.0),
-                      Text(
-                        "Welcome ${userData?.name}!",
-                        style: TextStyle(
-                          fontSize: 35.0,
-                        ),
-                      ),
-                      SizedBox(height: 50.0),
-                      Text(
-                        "Date",
-                        style: TextStyle(
-                            fontSize: 20.0
-                        ),
-                      ),
-                      ElevatedButton(
-                        child: Text(
-                          // checkUser = true ? userData?.aptDate : "Select Date",
-                          selectedDate = getText(),
-                          // selectedDate = userData?.aptDate ?? getText(),
-                          // userData?.aptDate ?? getText(),
-                          // userData?.aptDate == "" ? "Select Date" : userData?.aptDate,
-                          // selectedDate = userData?.aptDate != null ? "Select Date" : getText(),
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          isChanged = !isChanged;
-                          pickDate(context);
-                          // slots = availableSlots();
-                          setState(() {
-                            isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
-                            // selectedDate = userData?.aptDate ?? getText();
-                          });
-                        },
-                      ),
-                      SizedBox(height: 50.0),
-                      Text(
-                        "Time",
-                        style: TextStyle(
-                          fontSize: 20.0
-                        ),
-                      ),
-                      DropdownButtonFormField(
-                        //value: userData?.aptTime ?? _currentSlot,
-                          // hint: Text(userData?.aptTime ?? "Select Time"),
-                          // hint: Text(userData?.aptTime ?? "Select Time"),
-                          hint: Center(
-                            child: Text(
-                                selectTime,
-                                textAlign: TextAlign.center,
-                            ),
-                          ),
-                          items: slots.map((slot) {
-                            return DropdownMenuItem(
-                              value: slot,
-                              child: Text("$slot"),
-                            );
-                          }).toList(),
-                          onChanged: (slot) => setState(() => _currentSlot = (slot as String?)!)
-                      ),
-                      ElevatedButton(
-                        child: Text(
-                          "Submit",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () async {
-                          if(_currentSlot == "Select Time") {
-                            SnackBar(
-                              content: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.error_outline, size: 32),
-                                  const SizedBox(width: 16),
-                                  Expanded(
-                                      child: Text(
-                                        "Please select a valid time",
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                  ),
-                                ],
-                              ),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                            );
-
-                            /*
-                            SnackBar(
-                              content: Text(
-                                "Please select a valid time",
-                              ),
-                              backgroundColor: Colors.red,
-                              duration: Duration(seconds: 2),
-                              behavior: SnackBarBehavior.floating,
-                            );
-                            */
-                          }
-                          updateAppointmentCollection();
-                      })
-                      /*
-                      ElevatedButton(
-                        child: Text(
-                          "Select Time",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          isChanged =! isChanged;
-                          // PUT SOMETHING HERE
-                          setState(() {
-                            isChanged == true ? buttonText2 = "Select Time" : buttonText2 = "4:00";
-                          });
-                        }
-                      ),
-                      */
-                    ],
-                  ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+          title: Text('Select Appointment'),
+          backgroundColor: Colors.black,
+          actions: <Widget>[
+            TextButton.icon(
+              icon: Icon(Icons.person),
+              label: Text('Logout'),
+              onPressed: () async {
+                await _auth.signOut();
+              },
+            )
+          ]
+      ),
+      //body: AppointmentsList(),
+      body: Center(
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 100.0),
+              Text(
+                "Welcome ${userData?.name}!",
+                style: TextStyle(
+                  fontSize: 35.0,
                 ),
               ),
-
-
-
-
-                /*
-              body: Container(
-                //padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-                child: ElevatedButton(
-                  onPressed: () {
-
-                  },
+              SizedBox(height: 50.0),
+              Text(
+                "Date",
+                style: TextStyle(
+                    fontSize: 20.0
+                ),
+              ),
+              ElevatedButton(
+                child: Text(
+                    _currentDate,
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  isChanged = !isChanged;
+                  pickDate(context);
+                  // checkSlotAvailability();
+                  setState(() {
+                    // isChanged == true ? buttonText1 = "Select Date" : buttonText1 = "${date?.month}/${date?.day}/${date?.year}";
+                    isChanged == true ? buttonText1 = getCurrentDate(): getCurrentDate();
+                    _currentDate = getCurrentDate();
+                  });
+                },
+              ),
+              SizedBox(height: 50.0),
+              Text(
+                "Time",
+                style: TextStyle(
+                    fontSize: 20.0
+                ),
+              ),
+              DropdownButtonFormField(
+                  value: _currentTime,
+                  items: slots.map((slot) {
+                    return DropdownMenuItem(
+                      value: slot,
+                      child: Text("$slot"),
+                    );
+                  }).toList(),
+                  onChanged: (val) => setState(() => _currentTime = (val as String?) ?? '')
+              ),
+              ElevatedButton(
                   child: Text(
-                    'Sign in',
+                    _submitCancelButtonText!,
                     style: TextStyle(color: Colors.white),
                   ),
-                ),
-              ),
-               */
-                //body: UserList(),
-                /*
-              body: TableCalendar(
-                focusedDay: selectedDay,
-                firstDay: DateTime.now(),
-                lastDay: DateTime(2050),
-                calendarFormat: format,
-                onFormatChanged: (CalendarFormat _format){
-                  setState(() {
-                    format = _format;
-                  });
-                },
-                onDaySelected: (DateTime selectDay, DateTime focusDay){
-                  setState((){
-                    selectedDay = selectDay;
-                    focusedDay = focusDay;
-                  });
-                  //_showAppointmentInfo();
-                  //print(focusedDay);
-                },
-                calendarStyle: CalendarStyle(
-                  isTodayHighlighted: true,
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.black,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedTextStyle: TextStyle(color: Colors.white),
-                ),
-                selectedDayPredicate: (DateTime date){
-                  return isSameDay(selectedDay, date);
-                },
-                //startingDayOfWeek: StartingDayOfWeek.sunday,
-              ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AppointmentsScreen()),
-                  );
-                },
-                child: Icon(
-                Icons.schedule_sharp,
-              ),
-                backgroundColor: Colors.black,
-              ), */
-              );
-
-
-
-
-    return Container();
-
+                  onPressed: () async {
+                    if(_currentTime == "") {
+                      SnackBar(
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.error_outline, size: 32),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Text(
+                                "Please select a valid time",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                      );
+                    }
+                    if(_submitCancelButtonText == "Submit") {
+                      updateAppointmentCollection();
+                    } else{
+                      // Cancel appointment method
+                    }
+                  })
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
