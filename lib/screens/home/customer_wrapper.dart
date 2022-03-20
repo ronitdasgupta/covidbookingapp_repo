@@ -26,7 +26,7 @@ class CustomerWrapper extends StatelessWidget {
 
 
     return StreamProvider<UserData?>.value(
-      value: UsersCollection(uid: user?.uid ?? '').userData,
+      value: UsersCollection(uid: user.uid ?? '').userData,
       initialData: null,
       child: Customer(),
     );
